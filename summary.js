@@ -37,11 +37,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const fullName = contact.full_name || "";
     const additionalFirst = contact["Additional First Name"]?.trim() || "";
     const additionalLast = contact["Additional Last Name"]?.trim() || "";
-    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}`.trim() : "";
+    
+    let additionalName = "";
+    if (additionalFirst || additionalLast) {
+      additionalName = ` + ${additionalFirst} ${additionalLast}`.trim();
+    }
 
     document.getElementById("contact-full-name-display").textContent = `${fullName}${additionalName}`;
     document.getElementById("field-phone").textContent = contact.phone || "";
     document.getElementById("field-email").textContent = contact.email || "";
+
 
     // Roofing
     document.getElementById("field-roof-size").textContent = contact["Roof Size (square footage)"] || "";
