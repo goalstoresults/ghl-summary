@@ -2,9 +2,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const phoneParam = new URLSearchParams(window.location.search).get("phone");
   if (!phoneParam) return;
 
-  const res = await fetch(`https://acro-ghl-estimate.dennis-e64.workers.dev/?phone=${encodeURIComponent(phoneParam)}`);
+  // Normalize the phone number to match KV format
+  const raw = phoneParam.replace(/\D/g, "");
+  const formatted = raw.startsWith("1") ? `+${raw}` : `+1${raw}`;
+
+  const res = await fetch(`https://acro-ghl-estimate.dennis-e64.workers.dev/?phone=${encodeURIComponent(formatted)}`);
   const result = await res.json();
   const contact = result.contact;
+  console.log("Loaded contact:", contact);
   if (!contact) return;
 
   const showIfYes = (field, sectionId) => {
