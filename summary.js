@@ -34,7 +34,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     showIfYes("windows_submit", "windows-section");
 
     // Basic info
-    document.getElementById("field-full-name").textContent = contact.full_name || "";
+    const fullName = contact.full_name || "";
+    const additionalFirst = contact["Additional First Name"]?.trim() || "";
+    const additionalLast = contact["Additional Last Name"]?.trim() || "";
+    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}`.trim() : "";
+
+    document.getElementById("contact-full-name-display").textContent = `${fullName}${additionalName}`;
     document.getElementById("field-phone").textContent = contact.phone || "";
     document.getElementById("field-email").textContent = contact.email || "";
 
