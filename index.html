@@ -4,22 +4,70 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Estimate Summary</title>
-  <script defer src="summary.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h2 { border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f9f9f9;
+    }
+    h2 {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    .section {
+      margin-bottom: 30px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: none;
+    }
+    .field-row {
+      margin: 8px 0;
+    }
+    .field-label {
+      font-weight: bold;
+      display: inline-block;
+      width: 200px;
+    }
   </style>
 </head>
 <body>
-  <h2>Basic Info</h2>
-  <p><strong>Name:</strong> <span id="field-full-name"></span></p>
-  <p><strong>Email:</strong> <span id="field-email"></span></p>
-  <p><strong>Phone:</strong> <span id="field-phone"></span></p>
 
-  <div id="roofing-section" style="display:none;">
-    <h2>Roofing</h2>
-    <p><strong>Roof Size:</strong> <span id="field-roof-size"></span></p>
-    <p><strong>Roof Pitch:</strong> <span id="field-roof-pitch"></span></p>
+  <h1>Estimate Summary</h1>
+
+  <!-- Basic Info -->
+  <div id="basic-section" class="section">
+    <h2>Basic Info</h2>
+    <div class="field-row"><span class="field-label">Name:</span> <span id="field-full-name"></span></div>
+    <div class="field-row"><span class="field-label">Phone:</span> <span id="field-phone"></span></div>
+    <div class="field-row"><span class="field-label">Email:</span> <span id="field-email"></span></div>
   </div>
+
+  <!-- Roofing -->
+  <div id="roofing-section" class="section">
+    <h2>Roofing</h2>
+    <div class="field-row"><span class="field-label">Roof Size:</span> <span id="field-roof-size"></span></div>
+    <div class="field-row"><span class="field-label">Roof Pitch:</span> <span id="field-roof-pitch"></span></div>
+  </div>
+
+  <!-- Siding -->
+  <div id="siding-section" class="section">
+    <h2>Siding</h2>
+    <div class="field-row"><span class="field-label">Siding Type:</span> <span id="field-siding-type"></span></div>
+    <div class="field-row"><span class="field-label">Siding Color:</span> <span id="field-siding-color"></span></div>
+  </div>
+
+  <!-- Windows -->
+  <div id="windows-section" class="section">
+    <h2>Windows</h2>
+    <div class="field-row"><span class="field-label">Window Style:</span> <span id="field-window-style"></span></div>
+    <div class="field-row"><span class="field-label">Number of Windows:</span> <span id="field-num-windows"></span></div>
+  </div>
+
+  <!-- Load Summary Script -->
+  <script src="./summary.js" defer></script>
+
 </body>
 </html>
