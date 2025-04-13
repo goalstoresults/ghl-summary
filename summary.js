@@ -4,17 +4,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   const digitsOnly = rawPhone.replace(/\D/g, "");
   const formattedPhone = digitsOnly.startsWith("1") ? `+${digitsOnly}` : `+1${digitsOnly}`;
 
+  console.log("Raw phone:", rawPhone);
+  console.log("Formatted phone:", formattedPhone);
+
   if (!formattedPhone) return;
 
   try {
     const response = await fetch(`https://acro-ghl-estimate.dennis-e64.workers.dev/?phone=${encodeURIComponent(formattedPhone)}`);
     const result = await response.json();
+    console.log("Fetched result:", result);
+
     const contact = result.contact;
-    if (!contact) return;
+    if (!contact) {
+      console.warn("No contact found for this phone.");
+      return;
+    }
 
     // Section visibility based on *_submit fields
     const showIfYes = (field, sectionId) => {
-      if (contact[field] && contact[field].toLowerCase() === "yes") {
+      if (contact[field]?.toLowerCase() === "yes") {
         const section = document.getElementById(sectionId);
         if (section) section.style.display = "block";
       }
