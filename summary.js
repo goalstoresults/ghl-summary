@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const phoneParam = new URLSearchParams(window.location.search).get("p_phone");
+  const phoneParam = new URLSearchParams(window.location.search).get("phone");
   if (!phoneParam) return;
 
   const res = await fetch(`https://acro-ghl-estimate.dennis-e64.workers.dev/?phone=${encodeURIComponent(phoneParam)}`);
