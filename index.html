@@ -1,17 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estimate Summary</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f9f9f9;
+    }
+    h2 {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    .section {
+      margin-bottom: 30px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: none;
+    }
+    .field-row {
+      margin: 8px 0;
+    }
+    .field-label {
+      font-weight: bold;
+      display: inline-block;
+      width: 200px;
+    }
+  </style>
+</head>
 <body>
-  <h1>Debug Phone Param</h1>
-  <div id="debug-output" style="font-family: monospace; white-space: pre-wrap;"></div>
 
-  <script>
-    const output = document.getElementById("debug-output");
-    const query = window.location.search;
-    const params = new URLSearchParams(query);
-    const rawPhone = params.get("p_phone");
+  <h1>Estimate Summary</h1>
 
-    output.textContent = `
-URL: ${window.location.href}
-Search: ${query}
-p_phone (decoded): ${decodeURIComponent(rawPhone || "")}
-`;
-  </script>
+  <!-- Basic Info -->
+  <div id="basic-section" class="section">
+    <h2>Basic Info</h2>
+     <div class="field-row"><span class="field-label">Name:</span> <span id="contact-full-name-display"></span></div>
+    <div class="field-row"><span class="field-label">Phone:</span> <span id="field-phone"></span></div>
+    <div class="field-row"><span class="field-label">Email:</span> <span id="field-email"></span></div>
+    <div class="field-row"><span class="field-label">Address:</span> <span id="field-address"></span></div>
+
+    
+  </div>
+
+  <!-- Roofing -->
+  <div id="roofing-section" class="section">
+    <h2>Roofing</h2>
+    <div class="field-row"><span class="field-label">Roof Size:</span> <span id="field-roof-size"></span></div>
+    <div class="field-row"><span class="field-label">Roof Pitch:</span> <span id="field-roof-pitch"></span></div>
+  </div>
+
+  <!-- Siding -->
+  <div id="siding-section" class="section">
+    <h2>Siding</h2>
+    <div class="field-row"><span class="field-label">Siding Type:</span> <span id="field-siding-type"></span></div>
+    <div class="field-row"><span class="field-label">Siding Color:</span> <span id="field-siding-color"></span></div>
+  </div>
+
+  <!-- Windows -->
+  <div id="windows-section" class="section">
+    <h2>Windows</h2>
+    <div class="field-row"><span class="field-label">Window Style:</span> <span id="field-window-style"></span></div>
+    <div class="field-row"><span class="field-label">Number of Windows:</span> <span id="field-num-windows"></span></div>
+  </div>
+
+  <!-- Load Summary Script -->
+  <script src="./summary.js" defer></script>
+
+  <!-- TERMS / NOTICES SECTION -->
+<div id="terms-section" style="margin-top: 40px; font-family: sans-serif;">
+  <h2>TERMS / NOTICES: RESIDENTIAL / COMMERCIAL</h2>
+  <p>It is the homeowners and/or the HOA's responsibility to ensure that prior to the start of the project all areas of concern are prepared for the start of the project. All planters, grills, patio furnishings, and other precious objects should also be moved prior to the start of any roofing or vinyl siding project.</p>
+  <p>All vehicles should be parked at least <strong>15 feet away</strong> from the home during all work in progress - this is due to debris that could fall and/or hit the vehicle. Acro Contractor Corp is not responsible for any damages to this property should these guidelines not be followed. This should be considered a formal notice.</p>
+  <p>All interior wall hangings, including shelving, pictures and other precious objects should also be removed due to hammering until the project has been completed. Acro Contractor Corp is not responsible for interior wall or ceiling cracking or nail pops due to construction.</p>
+  <p>Acro Contractor Corp takes extreme care in the setting up of equipment, scaffolding, and tarps used on each project in order to protect all property and landscaping.</p>
+  <p>Any damages to the property incurred by Acro Contractor Corp will be repaired/replaced by Acro Contractor Corp. However, we cannot be held liable for damages to plants, flower beds, shrubbery, etc., located within 15' of the perimeter of the work area.</p>
+  <p>INITIALS: ________________</p>
+
+  <h3>The project consists of the entire roof.</h3>
+  <ul>
+    <li>Labor: 10-year Craftsmanship Warranty</li>
+    <li>Materials: Manufacturer's Warranty</li>
+  </ul>
+
+  <h3>PAYMENT TERMS:</h3>
+  <p>We hereby propose to furnish labor and materials to complete in accordance with the above specifications, for the sum of ___________</p>
+  <ul>
+    <li>1/3 due at signing of contract: ______________</li>
+    <li>2/3 due at completion of project: ____________</li>
+  </ul>
+
+  <h3>Scope of Work:</h3>
+  <ul>
+    <li>Install F-8 drip edge around entire perimeter of shingled roof (white)</li>
+    <li>Install OC water-resistant underlayment to all sheathing not covered by the waterproofing underlayment</li>
+    <li>Prepare all ridges of building to ensure proper ventilation</li>
+    <li>Install new architectural Owens Corning Duration Series shingles (color by owner): ____________</li>
+    <li>Install ridge vent and cap with OC ridge cap shingles to match</li>
+    <li>Replace all pipe flanges and waterproof all protrusions</li>
+  </ul>
+
+  <p>Acro Contractor Corp will replace 100 sq ft of rotted sheathing at no cost. Additional sheathing will be charged at $75 per sheet of plywood or $5 per linear foot of plank board. This includes removal, disposal, and installation.</p>
+  <p>Initials (acknowledgment of potential additional charges): __________</p>
+
+  <p>All leftover materials on site remain property of Acro Contractor Corp.</p>
+  <p>We will secure and close out all applicable town/city permits upon completion.</p>
+
+  <h3>Retainage Policy:</h3>
+  <p>In the rare event that retainage must be held for punch list items, the customer may only hold 10% of the contract price until all items have been completed.</p>
+
+  <p><strong>Authorized Signature:</strong> ___________________________ Date: ____________</p>
+  <p><strong>Customer Name:</strong> <span id="contact-full-name-display"></span></p>
+  
+<p id="additional-signature" style="margin-top: 30px; display: none;">
+  <strong>Additional Signature:</strong> ___________________________<br/>
+  <span id="additional-name-display"></span>
+</p>
+
+  <p><strong>Contractor Signature:</strong> ___________________________ Date: ____________</p>
+
+  <h3>ROOFING REPLACEMENT</h3>
+
+  <h3>ACCEPTANCE OF QUOTE</h3>
+  <p>Date: ______________</p>
+</div>
+
 </body>
+</html>
