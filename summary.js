@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-  const rawPhone = (params.get("p_phone") || params.get("phone") || "").trim();
+  const rawPhone = decodeURIComponent(params.get("phone") || params.get("p_phone") || "").trim();
   const digitsOnly = rawPhone.replace(/\D/g, "");
   const formattedPhone = digitsOnly.startsWith("1") ? `+${digitsOnly}` : `+1${digitsOnly}`;
 
