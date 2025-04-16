@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
+ddocument.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
 
   const rawPhone = decodeURIComponent(params.get("phone") || params.get("p_phone") || "").trim();
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("contact-full-name-signature")?.textContent = fullDisplayName;
     document.getElementById("field-phone").textContent = contact.phone || "";
     document.getElementById("field-email").textContent = contact.email || "";
-    document.getElementById("fullAddress").textContent = fullAddress;
+    document.getElementById("field-address").textContent = fullAddress;
 
     // Roofing
     document.getElementById("field-roof-size").textContent = contact["Roof Size (square footage)"] || "";
