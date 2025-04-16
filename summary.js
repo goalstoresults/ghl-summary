@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-  const rawPhoneParam = decodeURIComponent(params.get("phone") || params.get("p_phone") || "").trim();
-  const digitsOnly = rawPhoneParam.replace(/\D/g, "");
+  const rawPhone = decodeURIComponent(params.get("phone") || params.get("p_phone") || "").trim();
+
+  const digitsOnly = rawPhone.replace(/\D/g, "");
   const formattedPhone = digitsOnly.startsWith("1") ? `+${digitsOnly}` : `+1${digitsOnly}`;
 
-  console.log("Raw phone param:", rawPhoneParam);
+  console.log("Raw phone:", rawPhone);
   console.log("Digits only:", digitsOnly);
   console.log("Formatted phone:", formattedPhone);
 
@@ -18,17 +19,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const result = await response.json();
     const contact = result.contact;
 
-    console.log("Fetched result:", result);
     if (!contact) {
-      console.warn("No contact found for this phone.");
+      console.warn("No contact found.");
       return;
     }
 
-    // Show sections if *_submit is yes
+    // Show sections
     const showIfYes = (field, sectionId) => {
       if (contact[field]?.toLowerCase() === "yes") {
-        const section = document.getElementById(sectionId);
-        if (section) section.style.display = "block";
+        const el = document.getElementById(sectionId);
+        if (el) el.style.display = "block";
       }
     };
 
@@ -37,23 +37,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     showIfYes("siding_submit", "siding-section");
     showIfYes("windows_submit", "windows-section");
 
-    // Full Name + Additional
+    // Basic info
     const fullName = contact.full_name || "";
     const additionalFirst = contact["Additional First Name"]?.trim() || "";
     const additionalLast = contact["Additional Last Name"]?.trim() || "";
-    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}`.trim() : "";
-    const fullDisplayName = `${fullName}${additionalName}`;
+    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}` : "";
+    const displayName = fullName + additionalName;
 
-    // Address
     const address1 = contact.address1 || "";
     const city = contact.city || "";
     const state = contact.state || "";
-    const postalCode = contact.postal_code || "";
-    const fullAddress = `${address1}${city ? ", " + city : ""}${state ? " " + state : ""}${postalCode ? " " + postalCode : ""}`.trim();
+    const zip = contact.postal_code || "";
+    const fullAddress = `${address1}${city ? ", " + city : ""}${state ? " " + state : ""}${zip ? " " + zip : ""}`;
 
-    // Populate fields
-    document.getElementById("contact-full-name-display").textContent = fullDisplayName;
-    document.getElementById("contact-full-name-signature")?.textContent = fullDisplayName;
+    document.getElementById("contact-full-name-display").textContent = displayName;
+    document.getElementById("contact-full-name-signature")?.textContent = displayName;
     document.getElementById("field-phone").textContent = contact.phone || "";
     document.getElementById("field-email").textContent = contact.email || "";
     document.getElementById("field-address").textContent = fullAddress;
@@ -70,16 +68,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("field-window-style").textContent = contact["Type of Windows"] || "";
     document.getElementById("field-num-windows").textContent = contact["Number of Windows"] || "";
 
-    // Extra signature section
+    // Additional Signature
     if (additionalFirst || additionalLast) {
-      const additionalSection = document.getElementById("additional-signature");
-      const additionalSpan = document.getElementById("additional-name-display");
-      if (additionalSection && additionalSpan) {
-        additionalSection.style.display = "block";
-        additionalSpan.textContent = `${additionalFirst} ${additionalLast}`;
+      const extraSig = document.getElementById("additional-signature");
+      const nameSpan = document.getElementById("additional-name-display");
+      if (extraSig && nameSpan) {
+        extraSig.style.display = "block";
+        nameSpan.textContent = `${additionalFirst} ${additionalLast}`.trim();
       }
     }
-
   } catch (err) {
     console.error("Failed to fetch contact:", err);
   }
