@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-  const rawPhone = decodeURIComponent(params.get("phone") || params.get("p_phone") || "").trim();
 
+  const rawPhone = decodeURIComponent(params.get("phone") || params.get("p_phone") || "").trim();
   const digitsOnly = rawPhone.replace(/\D/g, "");
   const formattedPhone = digitsOnly.startsWith("1") ? `+${digitsOnly}` : `+1${digitsOnly}`;
 
@@ -19,12 +19,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const result = await response.json();
     const contact = result.contact;
 
+    console.log("Fetched result:", result);
+
     if (!contact) {
       console.warn("No contact found.");
       return;
     }
 
-    // Show sections
+    // Section visibility
     const showIfYes = (field, sectionId) => {
       if (contact[field]?.toLowerCase() === "yes") {
         const el = document.getElementById(sectionId);
@@ -37,21 +39,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     showIfYes("siding_submit", "siding-section");
     showIfYes("windows_submit", "windows-section");
 
-    // Basic info
+    // Full name and additional name
     const fullName = contact.full_name || "";
     const additionalFirst = contact["Additional First Name"]?.trim() || "";
     const additionalLast = contact["Additional Last Name"]?.trim() || "";
-    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}` : "";
-    const displayName = fullName + additionalName;
+    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}`.trim() : "";
+    const fullDisplayName = `${fullName}${additionalName}`;
 
+    // Address
     const address1 = contact.address1 || "";
     const city = contact.city || "";
     const state = contact.state || "";
     const zip = contact.postal_code || "";
-    const fullAddress = `${address1}${city ? ", " + city : ""}${state ? " " + state : ""}${zip ? " " + zip : ""}`;
+    const fullAddress = `${address1}${city ? ", " + city : ""}${state ? " " + state : ""}${zip ? " " + zip : ""}`.trim();
 
-    document.getElementById("contact-full-name-display").textContent = displayName;
-    document.getElementById("contact-full-name-signature")?.textContent = displayName;
+    // Basic Info DOM
+    document.getElementById("contact-full-name-display").textContent = fullDisplayName;
+    const signatureName = document.getElementById("contact-full-name-signature");
+    if (signatureName) signatureName.textContent = fullDisplayName;
     document.getElementById("field-phone").textContent = contact.phone || "";
     document.getElementById("field-email").textContent = contact.email || "";
     document.getElementById("field-address").textContent = fullAddress;
@@ -68,13 +73,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("field-window-style").textContent = contact["Type of Windows"] || "";
     document.getElementById("field-num-windows").textContent = contact["Number of Windows"] || "";
 
-    // Additional Signature
+    // Additional signature
     if (additionalFirst || additionalLast) {
-      const extraSig = document.getElementById("additional-signature");
-      const nameSpan = document.getElementById("additional-name-display");
-      if (extraSig && nameSpan) {
-        extraSig.style.display = "block";
-        nameSpan.textContent = `${additionalFirst} ${additionalLast}`.trim();
+      const additionalSection = document.getElementById("additional-signature");
+      const nameDisplay = document.getElementById("additional-name-display");
+      if (additionalSection && nameDisplay) {
+        additionalSection.style.display = "block";
+        nameDisplay.textContent = `${additionalFirst} ${additionalLast}`.trim();
       }
     }
   } catch (err) {
