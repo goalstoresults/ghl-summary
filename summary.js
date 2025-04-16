@@ -1,13 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-
-  const rawPhone = decodeURIComponent(params.get("phone") || params.get("p_phone") || "").trim();
-  const digitsOnly = rawPhone.replace(/\D/g, "");
+  const rawPhoneParam = decodeURIComponent(params.get("phone") || params.get("p_phone") || "").trim();
+  const digitsOnly = rawPhoneParam.replace(/\D/g, "");
   const formattedPhone = digitsOnly.startsWith("1") ? `+${digitsOnly}` : `+1${digitsOnly}`;
 
-  console.log("URL:", window.location.href);
-  console.log("Search:", window.location.search);
-  console.log("Raw phone param:", rawPhone);
+  console.log("Raw phone param:", rawPhoneParam);
   console.log("Digits only:", digitsOnly);
   console.log("Formatted phone:", formattedPhone);
 
@@ -27,13 +24,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    // Show sections if *_submit is yes
     const showIfYes = (field, sectionId) => {
       if (contact[field]?.toLowerCase() === "yes") {
         const section = document.getElementById(sectionId);
         if (section) section.style.display = "block";
-        console.log(`Showing section: ${sectionId}`);
-      } else {
-        console.log(`NOT showing section: ${sectionId} (value: ${contact[field]})`);
       }
     };
 
@@ -42,18 +37,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     showIfYes("siding_submit", "siding-section");
     showIfYes("windows_submit", "windows-section");
 
+    // Full Name + Additional
     const fullName = contact.full_name || "";
     const additionalFirst = contact["Additional First Name"]?.trim() || "";
     const additionalLast = contact["Additional Last Name"]?.trim() || "";
     const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}`.trim() : "";
-
     const fullDisplayName = `${fullName}${additionalName}`;
+
+    // Address
     const address1 = contact.address1 || "";
     const city = contact.city || "";
     const state = contact.state || "";
     const postalCode = contact.postal_code || "";
     const fullAddress = `${address1}${city ? ", " + city : ""}${state ? " " + state : ""}${postalCode ? " " + postalCode : ""}`.trim();
 
+    // Populate fields
     document.getElementById("contact-full-name-display").textContent = fullDisplayName;
     document.getElementById("contact-full-name-signature")?.textContent = fullDisplayName;
     document.getElementById("field-phone").textContent = contact.phone || "";
@@ -72,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("field-window-style").textContent = contact["Type of Windows"] || "";
     document.getElementById("field-num-windows").textContent = contact["Number of Windows"] || "";
 
-    // Show additional signature section if extra name exists
+    // Extra signature section
     if (additionalFirst || additionalLast) {
       const additionalSection = document.getElementById("additional-signature");
       const additionalSpan = document.getElementById("additional-name-display");
