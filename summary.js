@@ -1,4 +1,4 @@
-ddocument.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
 
   const rawPhone = decodeURIComponent(params.get("phone") || params.get("p_phone") || "").trim();
