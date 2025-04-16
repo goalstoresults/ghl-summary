@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-  const rawPhoneParam = params.get("p_phone") || "";
-  const digitsOnly = rawPhoneParam.replace(/\D/g, "");
-  const formattedPhone = digitsOnly.length === 11 && digitsOnly.startsWith("1")
-    ? `+${digitsOnly}`
-    : `+1${digitsOnly}`;
+  let rawPhone = params.get("p_phone") || "";
 
-  console.log("Raw phone param:", rawPhoneParam);
+  // Replace + with space (if encoded incorrectly), then strip non-digits
+  rawPhone = rawPhone.replace(/\s/g, "").replace(/\+/g, "");
+  const digitsOnly = rawPhone.replace(/\D/g, "");
+  const formattedPhone = digitsOnly.startsWith("1") ? `+${digitsOnly}` : `+1${digitsOnly}`;
+
+  console.log("Raw phone param:", rawPhone);
   console.log("Digits only:", digitsOnly);
   console.log("Formatted phone:", formattedPhone);
 
