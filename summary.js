@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         additionalSpan.textContent = `${additionalFirst} ${additionalLast}`;
       }
     }
+
   } catch (err) {
     console.error("Failed to fetch contact:", err);
   }
