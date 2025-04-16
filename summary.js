@@ -39,13 +39,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("contact-full-name-signature").textContent = fullName + additionalName;
     document.getElementById("field-phone").textContent = contact.phone || "";
     document.getElementById("field-email").textContent = contact.email || "";
-    document.getElementById("address").textContent = contact["Address"] || "";
-    document.getElementById("city").textContent = contact["Address"] || "";
-    document.getElementById("state").textContent = contact["Address"] || "";
-    document.getElementById("postal-code").textContent = contact["Address"] || "";
-    
-
-
     
     document.getElementById("field-roof-size").textContent = contact["Roof Size (square footage)"] || "";
     document.getElementById("field-roof-pitch").textContent = contact["Roof pitch/slope"] || "";
