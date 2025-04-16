@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
   const rawPhoneParam = params.get("p_phone") || "";
-  const digitsOnly = rawPhoneParam.replace(/\D/g, ""); // remove everything except numbers
+  const digitsOnly = rawPhoneParam.replace(/\D/g, "");
   const formattedPhone = digitsOnly.length === 11 && digitsOnly.startsWith("1")
     ? `+${digitsOnly}`
     : `+1${digitsOnly}`;
@@ -14,32 +14,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.warn("Invalid phone number.");
     return;
   }
-  if (!formattedPhone) return;
 
   try {
     const response = await fetch(`https://acro-ghl-estimate.dennis-e64.workers.dev/?phone=${encodeURIComponent(formattedPhone)}`);
     const result = await response.json();
-    const contact = result.contact;
 
+    const contact = result.contact;
     console.log("Fetched result:", result);
     if (!contact) {
       console.warn("No contact found for this phone.");
       return;
     }
 
-    // Debug: Log the basic_submit value
-    console.log("basic_submit field:", contact.basic_submit);
-
-    // Check for value in basic_submit and make lowercase comparison safe
+    // Section visibility based on *_submit fields
     const showIfYes = (field, sectionId) => {
-      const value = contact[field]?.toString().trim().toLowerCase();
-      console.log(`${field} = ${value}`);
-      if (value === "yes") {
+      const val = contact[field]?.toLowerCase();
+      if (val === "yes") {
         const section = document.getElementById(sectionId);
-        if (section) {
-          section.style.display = "block";
-          console.log(`Showing section: ${sectionId}`);
-        }
+        if (section) section.style.display = "block";
+        console.log(`Showing ${sectionId}`);
+      } else {
+        console.log(`Not showing ${sectionId} — value:`, val);
       }
     };
 
@@ -48,24 +43,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     showIfYes("siding_submit", "siding-section");
     showIfYes("windows_submit", "windows-section");
 
-    // Display basic info
+    // Basic info
     const fullName = contact.full_name || "";
     const additionalFirst = contact["Additional First Name"]?.trim() || "";
     const additionalLast = contact["Additional Last Name"]?.trim() || "";
-    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}`.trim() : "";
+    const additionalName = (additionalFirst || additionalLast)
+      ? ` + ${additionalFirst} ${additionalLast}`.trim()
+      : "";
 
-    document.getElementById("contact-full-name-display").textContent = fullName + additionalName;
-    document.getElementById("contact-full-name-signature").textContent = fullName + additionalName;
+    document.getElementById("contact-full-name-display").textContent = `${fullName}${additionalName}`;
+    document.getElementById("contact-full-name-signature").textContent = `${fullName}${additionalName}`;
+
+    if ((additionalFirst || additionalLast) && document.getElementById("additional-signature")) {
+      document.getElementById("additional-signature").style.display = "block";
+      document.getElementById("additional-name-display").textContent = `${additionalFirst} ${additionalLast}`.trim();
+    }
+
+    document.getElementById("field-phone").textContent = contact.phone || "";
+    document.getElementById("field-email").textContent = contact.email || "";
 
     const address1 = contact.address1 || "";
     const city = contact.city || "";
     const state = contact.state || "";
     const postalCode = contact.postal_code || "";
-    const fullAddress = `${address1}, ${city} ${state} ${postalCode}`.trim();
-    document.getElementById("fullAddress").textContent = fullAddress;
-
-    document.getElementById("field-phone").textContent = contact.phone || "";
-    document.getElementById("field-email").textContent = contact.email || "";
+    const fullAddress = `${address1}, ${city} ${state}${postalCode ? " " + postalCode : ""}`;
+    const fullAddressElement = document.getElementById("fullAddress");
+    if (fullAddressElement) fullAddressElement.textContent = fullAddress.trim();
 
     // Roofing
     document.getElementById("field-roof-size").textContent = contact["Roof Size (square footage)"] || "";
@@ -78,12 +81,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Windows
     document.getElementById("field-window-style").textContent = contact["Type of Windows"] || "";
     document.getElementById("field-num-windows").textContent = contact["Number of Windows"] || "";
-
-    // Show additional signature if additional name exists
-    if (additionalFirst || additionalLast) {
-      document.getElementById("additional-signature").style.display = "block";
-      document.getElementById("additional-name-display").textContent = `${additionalFirst} ${additionalLast}`.trim();
-    }
 
   } catch (err) {
     console.error("Failed to fetch contact:", err);
