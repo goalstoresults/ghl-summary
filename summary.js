@@ -1,11 +1,19 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-  const rawPhone = params.get("p_phone") || "";
-  const formattedPhone = rawPhone.startsWith("+") ? rawPhone : `+${rawPhone.replace(/\D/g, "")}`;
+  const rawPhoneParam = params.get("p_phone") || "";
+  const digitsOnly = rawPhoneParam.replace(/\D/g, ""); // remove everything except numbers
+  const formattedPhone = digitsOnly.length === 11 && digitsOnly.startsWith("1")
+    ? `+${digitsOnly}`
+    : `+1${digitsOnly}`;
 
-  console.log("Raw phone:", rawPhone);
+  console.log("Raw phone param:", rawPhoneParam);
+  console.log("Digits only:", digitsOnly);
   console.log("Formatted phone:", formattedPhone);
 
+  if (digitsOnly.length < 10) {
+    console.warn("Invalid phone number.");
+    return;
+  }
   if (!formattedPhone) return;
 
   try {
