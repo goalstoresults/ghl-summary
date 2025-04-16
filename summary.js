@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log("Raw phone:", rawPhone);
+console.log("Formatted phone:", formattedPhone);
+console.log("Fetched result:", result);
+console.log("Contact object:", contact);
+console.log("basic_submit value:", contact?.basic_submit);
+
   const params = new URLSearchParams(window.location.search);
   const rawPhone = params.get("p_phone") || "";
   const formattedPhone = rawPhone.startsWith("+") ? rawPhone : `+${rawPhone.replace(/\D/g, "")}`;
