@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Section visibility based on *_submit fields
     const showIfYes = (field, sectionId) => {
-      if (contact[field]?.toLowerCase() === "yes") {
+      if ((contact[field] || "").trim().toLowerCase() === "yes") {
         const section = document.getElementById(sectionId);
         if (section) section.style.display = "block";
         console.log(`Showing section: ${sectionId}`);
