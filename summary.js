@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("field-email").textContent = contact.email || "";
     document.getElementById("field-address").textContent = fullAddress;
     document.getElementById("field-building-type").textContent = contact["Building Type"] || "";
-    document.getElementById("field-number-of-stories").textContent = contact["Number Of Stories"] || "";
+    document.getElementById("field-number-of-stories").textContent = contact["Number of Stories"] || "";
     
 
     // Roofing
