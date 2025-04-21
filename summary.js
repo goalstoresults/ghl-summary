@@ -60,8 +60,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("field-phone").textContent = contact.phone || "";
     document.getElementById("field-email").textContent = contact.email || "";
     document.getElementById("field-address").textContent = fullAddress;
-    document.getElementById("field-building_type").textContent = contact.building-type || "";
-    document.getElementById("field-number_of_stories").textContent = contact.number-of-stories || "";
+    document.getElementById("field-building-type").textContent = contact.building_type || "";
+    document.getElementById("field-number-of-stories").textContent = contact.number_of_stories || "";
     
 
     // Roofing
