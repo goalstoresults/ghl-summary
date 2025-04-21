@@ -60,6 +60,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("field-phone").textContent = contact.phone || "";
     document.getElementById("field-email").textContent = contact.email || "";
     document.getElementById("field-address").textContent = fullAddress;
+    document.getElementById("field-building-type").textContent = contact.building-type || "";
+    document.getElementById("field-number-of-stories").textContent = contact.number-of-stories || "";
+    
 
     // Roofing
     document.getElementById("field-roof-size").textContent = contact["Roof Size (square footage)"] || "";
