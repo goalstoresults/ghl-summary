@@ -1,22 +1,26 @@
 export async function onRequest(context) {
   const { request, env } = context;
 
-  // Handle CORS preflight
+  // Enable CORS for acrocontractor.com
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "https://acrocontractor.com",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "86400"
+  };
+
+  // Respond to CORS preflight request
   if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "https://acrocontractor.com",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-      }
+      headers: corsHeaders
     });
   }
 
   if (request.method !== "POST") {
     return new Response("Only POST allowed", {
       status: 405,
-      headers: { "Access-Control-Allow-Origin": "https://acrocontractor.com" }
+      headers: corsHeaders
     });
   }
 
@@ -27,7 +31,7 @@ export async function onRequest(context) {
     if (!phone) {
       return new Response("Missing phone", {
         status: 400,
-        headers: { "Access-Control-Allow-Origin": "https://acrocontractor.com" }
+        headers: corsHeaders
       });
     }
 
@@ -42,15 +46,16 @@ export async function onRequest(context) {
 
     return new Response("Estimate saved", {
       status: 200,
-      headers: { "Access-Control-Allow-Origin": "https://acrocontractor.com" }
+      headers: corsHeaders
     });
 
   } catch (err) {
     console.error("Error saving estimate:", err);
     return new Response("Internal Server Error", {
       status: 500,
-      headers: { "Access-Control-Allow-Origin": "https://acrocontractor.com" }
+      headers: corsHeaders
     });
   }
 }
+
 
