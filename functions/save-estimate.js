@@ -1,7 +1,7 @@
 export async function onRequest(context) {
   const { request, env } = context;
 
-  // Enable CORS for acrocontractor.com
+  // Define CORS headers
   const corsHeaders = {
     "Access-Control-Allow-Origin": "https://acrocontractor.com",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -9,7 +9,7 @@ export async function onRequest(context) {
     "Access-Control-Max-Age": "86400"
   };
 
-  // Respond to CORS preflight request
+  // 1. Handle preflight (OPTIONS)
   if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
@@ -17,6 +17,7 @@ export async function onRequest(context) {
     });
   }
 
+  // 2. Handle non-POST methods
   if (request.method !== "POST") {
     return new Response("Only POST allowed", {
       status: 405,
@@ -24,6 +25,7 @@ export async function onRequest(context) {
     });
   }
 
+  // 3. Process estimate data
   try {
     const data = await request.json();
     const { phone, ...fields } = data;
@@ -50,12 +52,10 @@ export async function onRequest(context) {
     });
 
   } catch (err) {
-    console.error("Error saving estimate:", err);
+    console.error("Worker error:", err);
     return new Response("Internal Server Error", {
       status: 500,
       headers: corsHeaders
     });
   }
 }
-
-
