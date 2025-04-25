@@ -87,28 +87,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function updateExternalButtons(submitStatus) {
   const sections = [
-    { field: 'basic_submit', name: 'Basic Info', id: 'btn-basic' },
-    { field: 'roofing_submit', name: 'Roofing', id: 'btn-roofing' },
-    { field: 'siding_submit', name: 'Siding', id: 'btn-siding' },
-    { field: 'gutter_submit', name: 'Gutters', id: 'btn-gutter' },
-    { field: 'windows_submit', name: 'btn-window', id: 'btn-window' }
+    { field: 'basic_submit', label: 'Basic' },
+    { field: 'roofing_submit', label: 'Roofing' },
+    { field: 'siding_submit', label: 'Siding' },
+    { field: 'gutter_submit', label: 'Gutters' },
+    { field: 'windows_submit', label: 'Windows' }
   ];
 
   sections.forEach(section => {
     try {
-      const btn = window.parent.document.getElementById(section.id);
-      if (!btn) return;
+      // Find buttons in parent window that contain the text
+      const buttons = Array.from(window.parent.document.querySelectorAll("button"));
+
+      const matchingBtn = buttons.find(btn =>
+        btn.textContent.trim().toLowerCase().startsWith(section.label.toLowerCase())
+      );
+
+      if (!matchingBtn) {
+        console.warn(`Button for "${section.label}" not found`);
+        return;
+      }
 
       if (submitStatus[section.field]?.toLowerCase() === "yes") {
-        btn.style.backgroundColor = "#4CAF50"; // Green
-        btn.style.color = "white";
-        btn.style.fontWeight = "bold";
-        btn.style.cursor = "default";
-        btn.disabled = true;
-        btn.innerHTML = `✔️ ${section.name}`;
+        matchingBtn.innerHTML = `✔️ ${section.label}<br><small>Completed</small>`;
+        matchingBtn.style.backgroundColor = "#4CAF50";
+        matchingBtn.style.color = "#fff";
+        matchingBtn.disabled = true;
+        matchingBtn.style.pointerEvents = "none";
+        matchingBtn.style.opacity = "0.8";
       }
     } catch (err) {
-      console.warn(`Could not access or modify ${section.id}:`, err);
+      console.warn(`Error updating button for ${section.label}:`, err);
     }
   });
 }
