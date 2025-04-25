@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("field-discount-end-date").textContent = contact["discount_end_date"] || "";
     }
 
-    // SEND completed sections to parent page
+    // FINAL: update the buttons outside the iframe
     updateExternalButtons(contact);
 
   } catch (err) {
@@ -86,22 +86,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// Function to send postMessage to parent Funnel
+// Now directly update parent buttons
 function updateExternalButtons(submitStatus) {
   const sections = [
-    { field: 'basic_submit', label: 'Basic' },
-    { field: 'roofing_submit', label: 'Roofing' },
-    { field: 'siding_submit', label: 'Siding' },
-    { field: 'gutter_submit', label: 'Gutters' },
-    { field: 'windows_submit', label: 'Windows' }
+    { field: 'basic_submit', id: 'btn-basic', label: 'Basic' },
+    { field: 'roofing_submit', id: 'btn-roofing', label: 'Roofing' },
+    { field: 'siding_submit', id: 'btn-siding', label: 'Siding' },
+    { field: 'gutter_submit', id: 'btn-gutter', label: 'Gutters' },
+    { field: 'windows_submit', id: 'btn-window', label: 'Windows' }
   ];
 
   sections.forEach(section => {
-    if (submitStatus[section.field]?.toLowerCase() === "yes") {
-      window.parent.postMessage({
-        type: "markSectionComplete",
-        section: section.label
-      }, "*"); // Use "*" for now or specify your funnel domain for tighter security
+    try {
+      const btn = window.parent.document.getElementById(section.id);
+      if (!btn) {
+        console.warn(`Button with ID "${section.id}" not found`);
+        return;
+      }
+
+      if (submitStatus[section.field]?.toLowerCase() === "yes") {
+        btn.innerHTML = `✔️ ${section.label}<br><small>Completed</small>`;
+        btn.style.backgroundColor = "#4CAF50";
+        btn.style.color = "#fff";
+        btn.disabled = true;
+        btn.style.pointerEvents = "none";
+        btn.style.opacity = "0.8";
+      }
+    } catch (err) {
+      console.warn(`Error modifying button "${section.id}":`, err);
     }
   });
 }
