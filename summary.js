@@ -85,14 +85,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// Replace buttons on the GHL parent page
 function updateExternalButtons(submitStatus) {
   const sections = [
     { field: 'basic_submit', name: 'Basic Info', id: 'btn-basic' },
     { field: 'roofing_submit', name: 'Roofing', id: 'btn-roofing' },
     { field: 'siding_submit', name: 'Siding', id: 'btn-siding' },
     { field: 'gutter_submit', name: 'Gutters', id: 'btn-gutter' },
-    { field: 'windows_submit', name: 'Windows', id: 'btn-window' }
+    { field: 'windows_submit', name: 'btn-window', id: 'btn-window' }
   ];
 
   sections.forEach(section => {
@@ -101,16 +100,16 @@ function updateExternalButtons(submitStatus) {
       if (!btn) return;
 
       if (submitStatus[section.field]?.toLowerCase() === "yes") {
-        const replacement = document.createElement('div');
-        replacement.className = 'sidebar-section-complete';
-        replacement.innerHTML = `
-          <div>${section.name}</div>
-          <div>✔️</div>
-        `;
-        btn.replaceWith(replacement);
+        btn.style.backgroundColor = "#4CAF50"; // Green
+        btn.style.color = "white";
+        btn.style.fontWeight = "bold";
+        btn.style.cursor = "default";
+        btn.disabled = true;
+        btn.innerHTML = `✔️ ${section.name}`;
       }
     } catch (err) {
-      console.warn(`Could not access or replace ${section.id}:`, err);
+      console.warn(`Could not access or modify ${section.id}:`, err);
     }
   });
 }
+
