@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("field-discount-end-date").textContent = contact["discount_end_date"] || "";
     }
 
+    // SEND completed sections to parent page
     updateExternalButtons(contact);
 
   } catch (err) {
@@ -85,33 +86,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+// Function to send postMessage to parent Funnel
 function updateExternalButtons(submitStatus) {
   const sections = [
-    { field: 'basic_submit', class: 'btn-basic', label: 'Basic' },
-    { field: 'roofing_submit', class: 'btn-roofing', label: 'Roofing' },
-    { field: 'siding_submit', class: 'btn-siding', label: 'Siding' },
-    { field: 'gutter_submit', class: 'btn-gutter', label: 'Gutters' },
-    { field: 'windows_submit', class: 'btn-window', label: 'Windows' }
+    { field: 'basic_submit', label: 'Basic' },
+    { field: 'roofing_submit', label: 'Roofing' },
+    { field: 'siding_submit', label: 'Siding' },
+    { field: 'gutter_submit', label: 'Gutters' },
+    { field: 'windows_submit', label: 'Windows' }
   ];
 
   sections.forEach(section => {
-    try {
-      const btn = window.parent.document.querySelector(`.${section.class}`);
-      if (!btn) {
-        console.warn(`Button with class "${section.class}" not found`);
-        return;
-      }
-
-      if (submitStatus[section.field]?.toLowerCase() === "yes") {
-        btn.innerHTML = `✔️ ${section.label}<br><small>Completed</small>`;
-        btn.style.backgroundColor = "#4CAF50";
-        btn.style.color = "#fff";
-        btn.disabled = true;
-        btn.style.pointerEvents = "none";
-        btn.style.opacity = "0.8";
-      }
-    } catch (err) {
-      console.warn(`Error updating button with class "${section.class}":`, err);
+    if (submitStatus[section.field]?.toLowerCase() === "yes") {
+      window.parent.postMessage({
+        type: "markSectionComplete",
+        section: section.label
+      }, "*"); // Use "*" for now or specify your funnel domain for tighter security
     }
   });
 }
