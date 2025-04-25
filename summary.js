@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-function updateExternalButtons(submitStatus) {
+function sendExistingCompletedSections(contact) {
   const sections = [
     { field: 'basic_submit', label: 'Basic' },
     { field: 'roofing_submit', label: 'Roofing' },
@@ -96,8 +96,8 @@ function updateExternalButtons(submitStatus) {
   ];
 
   sections.forEach(section => {
-    if (submitStatus[section.field]?.toLowerCase() === "yes") {
-      console.log("Sending postMessage:", section.label);
+    if (contact[section.field]?.toLowerCase() === "yes") {
+      console.log("Sending existing postMessage for section:", section.label);
       window.parent.postMessage({
         type: "markSectionComplete",
         section: section.label
