@@ -78,15 +78,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("field-discount-end-date").textContent = contact["discount_end_date"] || "";
     }
 
-    updateSidebar(contact);
+    updateExternalButtons(contact);
 
   } catch (err) {
     console.error("Failed to fetch contact:", err);
   }
 });
 
-// New: Sidebar Update Function
-function updateSidebar(submitStatus) {
+// Replace buttons on the GHL parent page
+function updateExternalButtons(submitStatus) {
   const sections = [
     { field: 'basic_submit', name: 'Basic Info', id: 'btn-basic' },
     { field: 'roofing_submit', name: 'Roofing', id: 'btn-roofing' },
@@ -96,17 +96,21 @@ function updateSidebar(submitStatus) {
   ];
 
   sections.forEach(section => {
-    const btn = document.getElementById(section.id);
-    if (!btn) return;
+    try {
+      const btn = window.parent.document.getElementById(section.id);
+      if (!btn) return;
 
-    if (submitStatus[section.field]?.toLowerCase() === "yes") {
-      const replacement = document.createElement('div');
-      replacement.className = 'sidebar-section-complete';
-      replacement.innerHTML = `
-        <div>${section.name}</div>
-        <div>✔️</div>
-      `;
-      btn.replaceWith(replacement);
+      if (submitStatus[section.field]?.toLowerCase() === "yes") {
+        const replacement = document.createElement('div');
+        replacement.className = 'sidebar-section-complete';
+        replacement.innerHTML = `
+          <div>${section.name}</div>
+          <div>✔️</div>
+        `;
+        btn.replaceWith(replacement);
+      }
+    } catch (err) {
+      console.warn(`Could not access or replace ${section.id}:`, err);
     }
   });
 }
