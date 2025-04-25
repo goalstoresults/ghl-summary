@@ -87,38 +87,31 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function updateExternalButtons(submitStatus) {
   const sections = [
-    { field: 'basic_submit', label: 'Basic' },
-    { field: 'roofing_submit', label: 'Roofing' },
-    { field: 'siding_submit', label: 'Siding' },
-    { field: 'gutter_submit', label: 'Gutters' },
-    { field: 'windows_submit', label: 'Windows' }
+    { field: 'basic_submit', class: 'btn-basic', label: 'Basic' },
+    { field: 'roofing_submit', class: 'btn-roofing', label: 'Roofing' },
+    { field: 'siding_submit', class: 'btn-siding', label: 'Siding' },
+    { field: 'gutter_submit', class: 'btn-gutter', label: 'Gutters' },
+    { field: 'windows_submit', class: 'btn-window', label: 'Windows' }
   ];
 
   sections.forEach(section => {
     try {
-      // Find buttons in parent window that contain the text
-      const buttons = Array.from(window.parent.document.querySelectorAll("button"));
-
-      const matchingBtn = buttons.find(btn =>
-        btn.textContent.trim().toLowerCase().startsWith(section.label.toLowerCase())
-      );
-
-      if (!matchingBtn) {
-        console.warn(`Button for "${section.label}" not found`);
+      const btn = window.parent.document.querySelector(`.${section.class}`);
+      if (!btn) {
+        console.warn(`Button with class "${section.class}" not found`);
         return;
       }
 
       if (submitStatus[section.field]?.toLowerCase() === "yes") {
-        matchingBtn.innerHTML = `✔️ ${section.label}<br><small>Completed</small>`;
-        matchingBtn.style.backgroundColor = "#4CAF50";
-        matchingBtn.style.color = "#fff";
-        matchingBtn.disabled = true;
-        matchingBtn.style.pointerEvents = "none";
-        matchingBtn.style.opacity = "0.8";
+        btn.innerHTML = `✔️ ${section.label}<br><small>Completed</small>`;
+        btn.style.backgroundColor = "#4CAF50";
+        btn.style.color = "#fff";
+        btn.disabled = true;
+        btn.style.pointerEvents = "none";
+        btn.style.opacity = "0.8";
       }
     } catch (err) {
-      console.warn(`Error updating button for ${section.label}:`, err);
+      console.warn(`Error updating button with class "${section.class}":`, err);
     }
   });
 }
-
