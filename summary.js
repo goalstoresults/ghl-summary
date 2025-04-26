@@ -79,22 +79,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-number-of-stories", contact["Number of Stories"]);
 
     // Roofing
-    setText("field-roof-size-square-footage", contact.roof_size_square_footage);
-    setText("field-material-desired", contact.material_desired);
-    setText("field-roof-rate", formatMoney(contact.roof_rate));
-    setText("field-roof-flat-rate", formatMoney(contact.roof_flat_rate));
-    setText("field-roof-pitchslope", contact.roof_pitchslope);
-    setText("field-current-roofing-material", contact.current_roofing_material);
-    setText("field-condition-of-existing-roof", contact.condition_of_existing_roof);
-    setText("field-layers-of-existing-roof", contact.layers_of_existing_roof);
-    setText("field-tearoff-type", contact.tearoff_type);
-    setText("field-sheathing-condition", contact.sheathing_condition);
-    setText("field-color-preference", contact.color_preference);
-    setText("field-underlayment-type", contact.underlayment_type);
-    setText("field-installation-ventalation-upgrades", contact.installation__ventalation_upgrades);
-    setText("field-additional-roofing-information", contact.additional_roofing_information);
-    setText("field-underlayment-option", contact.underlayment_option);
-    setText("field-markup-percent", contact.markup_percent ? `${contact.markup_percent}%` : "");
+    setText("field-roof-size-square-footage", contact["Roof Size (square footage)"]);
+    setText("field-material-desired", contact["Material Desired"]);
+    setText("field-roof-rate", formatMoney(contact["Roof Rate"]));
+    setText("field-roof-flat-rate", formatMoney(contact["Roof Flat Rate"]));
+    setText("field-roof-pitchslope", contact["Roof pitch/slope"]);
+    setText("field-current-roofing-material", contact["Current roofing material"]);
+    setText("field-condition-of-existing-roof", contact["Condition of Existing Roof"]);
+    setText("field-layers-of-existing-roof", contact["Layers of Existing Roofing"]);
+    setText("field-tearoff-type", contact["Tearoff Type"]);
+    setText("field-sheathing-condition", contact["Sheathing Condition"]);
+    setText("field-color-preference", contact["Color Preference"]);
+    setText("field-underlayment-type", contact["Underlayment type"]);
+    setText("field-installation-ventalation-upgrades", contact["installation / ventalation upgrades"]);
+    setText("field-additional-roofing-information", contact["Additional Roofing Information"]);
+    setText("field-underlayment-option", contact["Underlayment Option"]);
+    setText("field-markup-percent", contact["Markup Percent"] ? `${contact["Markup Percent"]}%` : "");
 
     // Siding
     setText("field-total-square-footage-of-siding-area", contact.total_square_footage_of_siding_area);
