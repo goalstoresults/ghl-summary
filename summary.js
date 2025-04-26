@@ -13,8 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch(`https://acro-ghl-estimate.dennis-e64.workers.dev/?phone=${encodeURIComponent(formattedPhone)}`);
     const result = await response.json();
     const contact = result.contact;
-    console.log("Fetched Contact:", contact);
-
 
     if (!contact) {
       console.warn("No contact found.");
@@ -32,6 +30,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (isNaN(num)) return value;
       return `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
+
+    // Function to show sections and send postMessage for checkmark buttons
+    const showIfYes = (field, sectionId) => {
+      if (contact[field]?.toLowerCase() === "yes") {
+        const el = document.getElementById(sectionId);
+        if (el) el.style.display = "block";
+
+        window.parent.postMessage(
+          {
+            type: "markSectionComplete",
+            section: sectionId.replace("-section", "").replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())
+          },
+          "*"
+        );
+      }
+    };
+
+    // Show sections if their *_submit fields are yes
+    showIfYes("basic_submit", "basic-section");
+    showIfYes("roofing_submit", "roofing-section");
+    showIfYes("siding_submit", "siding-section");
+    showIfYes("gutters_submit", "gutters-section");
+    showIfYes("windows_submit", "windows-section");
+
     // Basic Info
     setText("field-estimate-date", contact.estimate_date);
     setText("contact-full-name-display", contact.full_name);
@@ -58,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-additional-roofing-information", contact.additional_roofing_information);
     setText("field-underlayment-option", contact.underlayment_option);
     setText("field-markup-percent", contact.markup_percent ? `${contact.markup_percent}%` : "");
+
     // Siding
     setText("field-total-square-footage-of-siding-area", contact.total_square_footage_of_siding_area);
     setText("field-type-of-new-siding", contact.type_of_new_siding);
@@ -103,6 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-demolition-and-disposal-fees", formatMoney(contact.demolition_and_disposal_fees));
     setText("field-equipment-and-logistic-fees", formatMoney(contact.equipment_and_logistic_fees));
     setText("field-additional-gutters-information", contact.additional_gutters_information);
+
     // Windows
     setText("field-window-style", contact.type_of_windows);
     setText("field-number-of-windows", contact.number_of_windows);
