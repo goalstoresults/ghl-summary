@@ -14,8 +14,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const result = await response.json();
     const contact = result.contact;
 
-    if (!contact || Object.keys(contact).length === 0) {
-      console.warn("Contact data missing or empty.");
+    if (!contact) {
+      console.warn("No contact found.");
       return;
     }
 
