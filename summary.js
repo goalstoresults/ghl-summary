@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
     // Basic Info
+    setText("field-estimate-date", contact.estimate_date);
     setText("contact-full-name-display", contact.full_name);
     setText("field-phone", contact.phone);
     setText("field-email", contact.email);
