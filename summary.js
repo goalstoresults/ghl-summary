@@ -69,12 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let fullName = contact.full_name || "";
     const additionalFirst = (contact["Additional First Name"] || "").trim();
     const additionalLast = (contact["Additional Last Name"] || "").trim();
-    let additionalName = "";
-    
-    if (additionalFirst || additionalLast) {
-      additionalName = ` + ${additionalFirst} ${additionalLast}`.trim();
-    }
-    
+    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}` : "";
     setText("contact-full-name-display", `${fullName}${additionalName}`);
     
     setText("field-phone", contact.phone);
