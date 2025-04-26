@@ -19,14 +19,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Helper to format money
     const formatMoney = (amount) => {
       if (!amount) return "";
       const num = parseFloat(amount.toString().replace(/[^0-9.-]+/g, ""));
       return isNaN(num) ? "" : `$${num.toFixed(2)}`;
     };
 
-    // Helper to format dates
     const formatDate = (dateString) => {
       if (!dateString) return "";
       const date = new Date(dateString);
@@ -34,7 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       return date.toLocaleDateString("en-US");
     };
 
-    // Helper to safely set text or hide if empty
     const setText = (id, value) => {
       const el = document.getElementById(id);
       if (el) {
@@ -48,12 +45,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
 
-    // Helper to post message for button completion
     const markSectionComplete = (label) => {
       window.parent.postMessage({ type: "markSectionComplete", section: label }, "*");
     };
 
-    // Resend button completion for all sections
     const checkAndMarkSections = () => {
       if (contact["basic_submit"]?.toLowerCase() === "yes") markSectionComplete("Basic");
       if (contact["roofing_submit"]?.toLowerCase() === "yes") markSectionComplete("Roofing");
@@ -62,7 +57,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (contact["windows_submit"]?.toLowerCase() === "yes") markSectionComplete("Windows");
     };
 
-    // Actual field population function
     const populateFields = () => {
       // ===== Basic Info =====
       setText("field-estimate-date", formatDate(contact["Estimate Date"]));
@@ -164,6 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       setText("field-additional-windows-information", contact["Additional Windows Information"]);
     };
 
+    // ✅ Very Important: call them after fetching
     populateFields();
     checkAndMarkSections();
 
