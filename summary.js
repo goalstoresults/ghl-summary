@@ -19,6 +19,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    const formatDate = (isoDate) => {
+      if (!isoDate) return "";
+      const d = new Date(isoDate);
+      if (isNaN(d)) return isoDate;
+      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    };
+
     const setText = (id, value) => {
       const el = document.getElementById(id);
       if (el) el.textContent = value || "";
@@ -55,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     showIfYes("windows_submit", "windows-section");
 
     // Basic Info
-    setText("field-estimate-date", contact.estimate_date);
+    setText("field-estimate-date", formatDate(contact.estimate_date));
     setText("contact-full-name-display", contact.full_name);
     setText("field-phone", contact.phone);
     setText("field-email", contact.email);
