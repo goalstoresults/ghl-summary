@@ -69,14 +69,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     let fullName = contact.full_name || "";
     const additionalFirst = (contact.customData?.["Additional First Name"] || "").trim();
     const additionalLast = (contact.customData?.["Additional Last Name"] || "").trim();
-    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}`.trim() : "";
-    setText("contact-full-name-display", `${fullName}${additionalName}`);
+    
+    let additionalName = "";
+    if (additionalFirst || additionalLast) {
+      additionalName = `+ ${additionalFirst} ${additionalLast}`.trim();
+    }
+    
+    setText("contact-full-name-display", `${fullName}${additionalName ? ' ' + additionalName : ''}`);
     
     setText("field-phone", contact.phone);
     setText("field-email", contact.email);
     setText("field-address", `${contact.address1 || ""}${contact.city ? ", " + contact.city : ""}${contact.state ? " " + contact.state : ""}${contact.postal_code ? " " + contact.postal_code : ""}`);
     setText("field-building-type", contact["Building Type"]);
     setText("field-number-of-stories", contact["Number of Stories"]);
+
 
     // Roofing
     setText("field-roof-size-square-footage", contact.roof_size_square_footage);
