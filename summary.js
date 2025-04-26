@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch(`https://acro-ghl-estimate.dennis-e64.workers.dev/?phone=${encodeURIComponent(formattedPhone)}`);
     const result = await response.json();
     const contact = result.contact;
-    console.log("Estimate Date from contact:", contact.estimate_date);
+   console.log("Full Contact:", contact);
 
 
     if (!contact) {
