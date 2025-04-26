@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     showIfYes("windows_submit", "windows-section");
 
     // Basic Info
-    setText("field-estimate-date", formatDate(contact.estimate_date));
+    setText("field-estimate-date", formatDate(contact["Estimate Date"]));
     setText("contact-full-name-display", contact.full_name);
     setText("field-phone", contact.phone);
     setText("field-email", contact.email);
