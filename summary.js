@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch(`https://acro-ghl-estimate.dennis-e64.workers.dev/?phone=${encodeURIComponent(formattedPhone)}`);
     const result = await response.json();
     const contact = result.contact;
-    console.log("Full Contact:", contact);
+   // console.log("Full Contact:", contact);
 
 
     if (!contact) {
@@ -21,50 +21,64 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    const formatDate = (isoDate) => {
+      if (!isoDate) return "";
+      const d = new Date(isoDate);
+      if (isNaN(d)) return isoDate;
+      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    };
+
     const setText = (id, value) => {
       const el = document.getElementById(id);
-      if (el) {
-        const row = el.closest(".field-row");
-        if (!value) {
-          if (row) row.style.display = "none";
-        } else {
-          el.textContent = value;
-          if (row) row.style.display = "block";
-        }
+      if (el) el.textContent = value || "";
+    };
+
+    const formatMoney = (value) => {
+      if (!value) return "";
+      const num = parseFloat(value);
+      if (isNaN(num)) return value;
+      return `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
+    // Function to show sections and send postMessage for checkmark buttons
+    const showIfYes = (field, sectionId) => {
+      if (contact[field]?.toLowerCase() === "yes") {
+        const el = document.getElementById(sectionId);
+        if (el) el.style.display = "block";
+
+        window.parent.postMessage(
+          {
+            type: "markSectionComplete",
+            section: sectionId.replace("-section", "").replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())
+          },
+          "*"
+        );
       }
     };
 
-    const formatMoney = (amount) => {
-      if (!amount) return "";
-      const num = parseFloat(amount.toString().replace(/[^0-9.-]+/g, ""));
-      return isNaN(num) ? "" : `$${num.toFixed(2)}`;
-    };
+    // Show sections if their *_submit fields are yes
+    showIfYes("basic_submit", "basic-section");
+    showIfYes("roofing_submit", "roofing-section");
+    showIfYes("siding_submit", "siding-section");
+    showIfYes("gutters_submit", "gutters-section");
+    showIfYes("windows_submit", "windows-section");
 
-    const formatDate = (dateString) => {
-      if (!dateString) return "";
-      const date = new Date(dateString);
-      if (isNaN(date)) return dateString;
-      return date.toLocaleDateString("en-US");
-    };
-
-    const markSectionComplete = (label) => {
-      window.parent.postMessage({ type: "markSectionComplete", section: label }, "*");
-    };
-
-    // ===== Basic Info =====
+    // Basic Info
     setText("field-estimate-date", formatDate(contact["Estimate Date"]));
+    
     let fullName = contact.full_name || " ";
     const additionalFirst = (contact["Additional First Name"] || "").trim();
     const additionalLast = (contact["Additional Last Name"] || "").trim();
     const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}` : "";
     setText("contact-full-name-display", `${fullName}${additionalName}`);
+    
     setText("field-phone", contact.phone);
     setText("field-email", contact.email);
     setText("field-address", `${contact.address1 || ""}${contact.city ? ", " + contact.city : ""}${contact.state ? " " + contact.state : ""}${contact.postal_code ? " " + contact.postal_code : ""}`);
     setText("field-building-type", contact["Building Type"]);
     setText("field-number-of-stories", contact["Number of Stories"]);
 
-    // ===== Roofing =====
+    // Roofing
     setText("field-roof-size-square-footage", contact["Roof Size (square footage)"]);
     setText("field-material-desired", contact["Material Desired"]);
     setText("field-roof-rate", formatMoney(contact["Roof Rate"]));
@@ -82,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-underlayment-option", contact["Underlayment Option"]);
     setText("field-markup-percent", contact["Markup Percent"] ? `${contact["Markup Percent"]}%` : "");
 
-    // ===== Siding =====
+    // Siding
     setText("field-total-square-footage-of-siding-area", contact["Total Square Footage of Siding Area"]);
     setText("field-type-of-new-siding", contact["Type of New Siding"]);
     setText("field-siding-rate", formatMoney(contact["Siding Rate"]));
@@ -99,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-permits-or-inspection-fees", formatMoney(contact["Permits or Inspection Fees"]));
     setText("field-additional-siding-information", contact["Additional Siding Information"]);
 
-    // ===== Gutters =====
+    // Gutters
     setText("field-linear-feet-of-gutters-required", contact["Linear Feet of Gutters Required"]);
     setText("field-type-of-gutter-work", contact["Type of Gutter Work"]);
     setText("field-gutter-rate", formatMoney(contact["Gutter Rate"]));
@@ -128,7 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-equipment-and-logistic-fees", formatMoney(contact["Equipment and Logistic Fees"]));
     setText("field-additional-gutters-information", contact["Additional Gutters Information"]);
 
-    // ===== Windows =====
+    // Windows
     setText("field-number-of-windows", contact["Number of Windows"]);
     setText("field-type-of-windows", contact["Type of Windows"]);
     setText("field-material", contact["Material"]);
@@ -149,13 +163,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-caulking-and-insulation", contact["Caulking and Insulation"]);
     setText("field-cleanup-services", contact["Cleanup Services"]);
     setText("field-additional-windows-information", contact["Additional Windows Information"]);
-
-    // Mark Sections Complete
-    if (contact["basic_submit"]?.toLowerCase() === "yes") markSectionComplete("Basic");
-    if (contact["roofing_submit"]?.toLowerCase() === "yes") markSectionComplete("Roofing");
-    if (contact["siding_submit"]?.toLowerCase() === "yes") markSectionComplete("Siding");
-    if (contact["gutters_submit"]?.toLowerCase() === "yes") markSectionComplete("Gutters");
-    if (contact["windows_submit"]?.toLowerCase() === "yes") markSectionComplete("Windows");
 
   } catch (err) {
     console.error("Failed to fetch contact:", err);
