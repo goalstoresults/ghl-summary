@@ -67,25 +67,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-estimate-date", formatDate(contact["Estimate Date"]));
     
     let fullName = contact.full_name || "";
-    const additionalFirst = (contact.customData?.["Additional First Name"] || "").trim();
-    const additionalLast = (contact.customData?.["Additional Last Name"] || "").trim();
-    
-    let fullDisplayName = fullName;
+    const additionalFirst = (contact["Additional First Name"] || "").trim();
+    const additionalLast = (contact["Additional Last Name"] || "").trim();
+    let additionalName = "";
     
     if (additionalFirst || additionalLast) {
-      const additionalFullName = [additionalFirst, additionalLast].filter(Boolean).join(' ');
-      fullDisplayName += ` + ${additionalFullName}`;
+      additionalName = ` + ${additionalFirst} ${additionalLast}`.trim();
     }
     
-    setText("contact-full-name-display", fullDisplayName);
+    setText("contact-full-name-display", `${fullName}${additionalName}`);
     
     setText("field-phone", contact.phone);
     setText("field-email", contact.email);
     setText("field-address", `${contact.address1 || ""}${contact.city ? ", " + contact.city : ""}${contact.state ? " " + contact.state : ""}${contact.postal_code ? " " + contact.postal_code : ""}`);
     setText("field-building-type", contact["Building Type"]);
     setText("field-number-of-stories", contact["Number of Stories"]);
-    
-
 
     // Roofing
     setText("field-roof-size-square-footage", contact.roof_size_square_footage);
