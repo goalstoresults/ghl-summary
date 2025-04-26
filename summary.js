@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch(`https://acro-ghl-estimate.dennis-e64.workers.dev/?phone=${encodeURIComponent(formattedPhone)}`);
     const result = await response.json();
     const contact = result.contact;
+    console.log("Fetched Contact:", contact);
+
 
     if (!contact) {
       console.warn("No contact found.");
