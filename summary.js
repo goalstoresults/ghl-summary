@@ -49,14 +49,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.parent.postMessage({ type: "markSectionComplete", section: label }, "*");
     };
 
-    const checkAndMarkSections = () => {
-      if (contact["basic_submit"]?.toLowerCase() === "yes") markSectionComplete("Basic");
-      if (contact["roofing_submit"]?.toLowerCase() === "yes") markSectionComplete("Roofing");
-      if (contact["siding_submit"]?.toLowerCase() === "yes") markSectionComplete("Siding");
-      if (contact["gutters_submit"]?.toLowerCase() === "yes") markSectionComplete("Gutters");
-      if (contact["windows_submit"]?.toLowerCase() === "yes") markSectionComplete("Windows");
-    };
-
     // ===== Basic Info =====
     setText("field-estimate-date", formatDate(contact["Estimate Date"]));
     let fullName = contact.full_name || " ";
@@ -156,8 +148,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-cleanup-services", contact["Cleanup Services"]);
     setText("field-additional-windows-information", contact["Additional Windows Information"]);
 
-    // Final: Mark Completed Sections
-    checkAndMarkSections();
+    // Mark Sections Complete
+    if (contact["basic_submit"]?.toLowerCase() === "yes") markSectionComplete("Basic");
+    if (contact["roofing_submit"]?.toLowerCase() === "yes") markSectionComplete("Roofing");
+    if (contact["siding_submit"]?.toLowerCase() === "yes") markSectionComplete("Siding");
+    if (contact["gutters_submit"]?.toLowerCase() === "yes") markSectionComplete("Gutters");
+    if (contact["windows_submit"]?.toLowerCase() === "yes") markSectionComplete("Windows");
 
   } catch (err) {
     console.error("Failed to fetch contact:", err);
