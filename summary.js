@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Basic Info
     setText("field-estimate-date", formatDate(contact["Estimate Date"]));
     
-    let fullName = contact.full_name || "";
+    let fullName = contact.full_name || " ";
     const additionalFirst = (contact["Additional First Name"] || "").trim();
     const additionalLast = (contact["Additional Last Name"] || "").trim();
     const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}` : "";
