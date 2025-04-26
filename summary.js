@@ -19,89 +19,111 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    const showIfYes = (field, sectionId) => {
-      if (contact[field]?.toLowerCase() === "yes") {
-        const el = document.getElementById(sectionId);
-        if (el) el.style.display = "block";
-      }
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value || "";
     };
 
-    showIfYes("basic_submit", "basic-section");
-    showIfYes("roofing_submit", "roofing-section");
-    showIfYes("siding_submit", "siding-section");
-    showIfYes("windows_submit", "windows-section");
-
-    document.getElementById("contact-full-name-display").textContent = contact.full_name || "";
-    document.getElementById("field-phone").textContent = contact.phone || "";
-    document.getElementById("field-email").textContent = contact.email || "";
-
-    const address1 = contact.address1 || "";
-    const city = contact.city || "";
-    const state = contact.state || "";
-    const zip = contact.postal_code || "";
-    const fullAddress = `${address1}${city ? ", " + city : ""}${state ? " " + state : ""}${zip ? " " + zip : ""}`.trim();
-    document.getElementById("field-address").textContent = fullAddress;
-
-    document.getElementById("field-building-type").textContent = contact["Building Type"] || "";
-    document.getElementById("field-number-of-stories").textContent = contact["Number of Stories"] || "";
-
-    document.getElementById("field-roof-size").textContent = contact["Roof Size (square footage)"] || "";
-    document.getElementById("field-roof-pitch").textContent = contact["Roof pitch/slope"] || "";
-
-    document.getElementById("field-siding-type").textContent = contact["Type of New Siding"] || "";
-    document.getElementById("field-siding-color").textContent = contact["Siding Brand/Model/Color"] || "";
-
-    document.getElementById("field-window-style").textContent = contact["Type of Windows"] || "";
-    document.getElementById("field-num-windows").textContent = contact["Number of Windows"] || "";
-
-    const showSectionIfTotalExists = (sectionId, fieldId, totalValue) => {
-      const section = document.getElementById(sectionId);
-      const field = document.getElementById(fieldId);
-      if (totalValue && section && field) {
-        section.style.display = "block";
-        field.textContent = `$${parseFloat(totalValue).toFixed(2)}`;
-      }
+    const formatMoney = (value) => {
+      if (!value) return "";
+      const num = parseFloat(value);
+      if (isNaN(num)) return value;
+      return `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
+    // Basic Info
+    setText("contact-full-name-display", contact.full_name);
+    setText("field-phone", contact.phone);
+    setText("field-email", contact.email);
+    setText("field-address", `${contact.address1 || ""}${contact.city ? ", " + contact.city : ""}${contact.state ? " " + contact.state : ""}${contact.postal_code ? " " + contact.postal_code : ""}`);
+    setText("field-building-type", contact["Building Type"]);
+    setText("field-number-of-stories", contact["Number of Stories"]);
 
-    showSectionIfTotalExists("roofing-totals-section", "field-roof-total", contact["roof_total"]);
-    showSectionIfTotalExists("siding-totals-section", "field-siding-total", contact["siding_total"]);
-    showSectionIfTotalExists("gutter-totals-section", "field-gutter-total", contact["gutter_total"]);
-    showSectionIfTotalExists("window-totals-section", "field-window-total", contact["window_total"]);
+    // Roofing
+    setText("field-roof-size-square-footage", contact.roof_size_square_footage);
+    setText("field-material-desired", contact.material_desired);
+    setText("field-roof-rate", formatMoney(contact.roof_rate));
+    setText("field-roof-flat-rate", formatMoney(contact.roof_flat_rate));
+    setText("field-roof-pitchslope", contact.roof_pitchslope);
+    setText("field-current-roofing-material", contact.current_roofing_material);
+    setText("field-condition-of-existing-roof", contact.condition_of_existing_roof);
+    setText("field-layers-of-existing-roof", contact.layers_of_existing_roof);
+    setText("field-tearoff-type", contact.tearoff_type);
+    setText("field-sheathing-condition", contact.sheathing_condition);
+    setText("field-color-preference", contact.color_preference);
+    setText("field-underlayment-type", contact.underlayment_type);
+    setText("field-installation-ventalation-upgrades", contact.installation__ventalation_upgrades);
+    setText("field-additional-roofing-information", contact.additional_roofing_information);
+    setText("field-underlayment-option", contact.underlayment_option);
+    setText("field-markup-percent", contact.markup_percent ? `${contact.markup_percent}%` : "");
+    // Siding
+    setText("field-total-square-footage-of-siding-area", contact.total_square_footage_of_siding_area);
+    setText("field-type-of-new-siding", contact.type_of_new_siding);
+    setText("field-siding-rate", formatMoney(contact.siding_rate));
+    setText("field-siding-flat-cost", formatMoney(contact.siding_flat_cost));
+    setText("field-type-of-existing-siding", contact.type_of_existing_siding);
+    setText("field-siding-brandmodelcolor", contact.siding_brandmodelcolor);
+    setText("field-trim-and-accent-areas", contact.trim_and_accent_areas);
+    setText("field-number-and-type-of-windowsdoors", contact.number_and_type_of_windowsdoors);
+    setText("field-special-architectural-features", contact.special_architectural_features);
+    setText("field-labor-costs", formatMoney(contact.labor_costs));
+    setText("field-material-costs", formatMoney(contact.material_costs));
+    setText("field-equipment-rental", formatMoney(contact.equipment_rental));
+    setText("field-wast-disposaldumpster-fees", formatMoney(contact.wast_disposaldumpster_fees));
+    setText("field-permits-or-inspection-fees", formatMoney(contact.permits_or_inspection_fees));
+    setText("field-additional-siding-information", contact.additional_siding_information);
 
-    const summarySection = document.getElementById("summary-totals-section");
-    if (summarySection && (contact["combined_total"] || contact["grand_total"])) {
-      summarySection.style.display = "block";
-      document.getElementById("field-combined-total").textContent = `$${contact["combined_total"] || ""}`;
-      document.getElementById("field-grand-total").textContent = `$${contact["grand_total"] || ""}`;
-      document.getElementById("field-discount").textContent = contact["discount_value"] ? `${contact["discount_type"] === "percent" ? contact["discount_value"] + "%" : "$" + contact["discount_value"]}` : "";
-      document.getElementById("field-discount-reason").textContent = contact["discount_reason"] || "";
-      document.getElementById("field-discount-end-date").textContent = contact["discount_end_date"] || "";
-    }
-
-    // FINAL: update the buttons outside the iframe
-    updateExternalButtons(contact);
+    // Gutters
+    setText("field-linear-feet-of-gutters-required", contact.linear_feet_of_gutters_required);
+    setText("field-type-of-gutter-work", contact.type_of_gutter_work);
+    setText("field-gutter-rate", formatMoney(contact.gutter_rate));
+    setText("field-gutter-flat-fee", formatMoney(contact.gutter_flat_fee));
+    setText("field-type-of-gutters", contact.type_of_gutters);
+    setText("field-gutter-material-chosen", contact.gutter_material_chosen);
+    setText("field-gutter-size", contact.gutter_size);
+    setText("field-downspout-size-and-style", contact.downspout_size_and_style);
+    setText("field-gutter-guard-type", contact.gutter_guard_type);
+    setText("field-gutter-color-and-finish", contact.gutter_color_and_finish);
+    setText("field-areas-of-house-involved", contact.areas_of_house_involved);
+    setText("field-linear-feet-of-downspouts", contact.linear_feet_of_downspouts);
+    setText("field-number-of-insideoutside-corners", contact.number_of_insideoutside_corners);
+    setText("field-number-of-downspout-dropsoutlets", contact.number_of_downspout_dropsoutlets);
+    setText("field-special-roof-features", contact.special_roof_features);
+    setText("field-gutter-material-cost-per-linear-foot", formatMoney(contact.gutter_material_cost_per_linear_foot));
+    setText("field-downspout-material", formatMoney(contact.downspout_material));
+    setText("field-elbows-end-caps-hangers-brackets", formatMoney(contact.elbows_end_caps_hangers_brackets));
+    setText("field-screws-sealants-splash-blocks-gutter-guards", formatMoney(contact.screws_sealants_splash_blocks_gutter_guards));
+    setText("field-fasteners-hidden-hangers-miters", formatMoney(contact.fasteners_hidden_hangers_miters));
+    setText("field-waste-factor", formatMoney(contact.waste_factor));
+    setText("field-hourly-labor-rate", formatMoney(contact.hourly_labor_rate));
+    setText("field-estimated-labor-time", contact.estimated_labor_time);
+    setText("field-additional-labor-fees", formatMoney(contact.additional_labor_fees));
+    setText("field-demolition-and-disposal-fees", formatMoney(contact.demolition_and_disposal_fees));
+    setText("field-equipment-and-logistic-fees", formatMoney(contact.equipment_and_logistic_fees));
+    setText("field-additional-gutters-information", contact.additional_gutters_information);
+    // Windows
+    setText("field-window-style", contact.type_of_windows);
+    setText("field-number-of-windows", contact.number_of_windows);
+    setText("field-type-of-windows", contact.type_of_windows);
+    setText("field-material", contact.material);
+    setText("field-window-rate", formatMoney(contact.window_rate));
+    setText("field-window-flat-rate", formatMoney(contact.window_flat_rate));
+    setText("field-glass-type", contact.glass_type);
+    setText("field-grid-style", contact.grid_style);
+    setText("field-interiorexterior-color", contact.interiorexterior_color);
+    setText("field-window-brandmodel", contact.window_brandmodel);
+    setText("field-size-or-custom-measurements", contact.size_or_custom_measurements);
+    setText("field-labor-cost-per-window-or-hourly", formatMoney(contact.labor_cost_per_window_or_hourly));
+    setText("field-number-of-crew-members", contact.number_of_crew_members);
+    setText("field-estimated-labor-hours", contact.estimated_labor_hours);
+    setText("field-old-window-removal-costs", formatMoney(contact.old_window_removal_costs));
+    setText("field-window-disposal-fees", formatMoney(contact.window_disposal_fees));
+    setText("field-flashingwaterproofing-details", contact.flashingwaterproofing_details);
+    setText("field-interiorexterior-trim-work", contact.interiorexterior_trim_work);
+    setText("field-caulking-and-insulation", contact.caulking_and_insulation);
+    setText("field-cleanup-services", contact.cleanup_services);
+    setText("field-additional-windows-information", contact.additional_windows_information);
 
   } catch (err) {
     console.error("Failed to fetch contact:", err);
   }
 });
-
-function sendExistingCompletedSections(contact) {
-  const sections = [
-    { field: 'basic_submit', label: 'Basic' },
-    { field: 'roofing_submit', label: 'Roofing' },
-    { field: 'siding_submit', label: 'Siding' },
-    { field: 'gutter_submit', label: 'Gutters' },
-    { field: 'windows_submit', label: 'Windows' }
-  ];
-
-  sections.forEach(section => {
-    if (contact[section.field]?.toLowerCase() === "yes") {
-      console.log("Sending existing postMessage for section:", section.label);
-      window.parent.postMessage({
-        type: "markSectionComplete",
-        section: section.label
-      }, "*");
-    }
-  });
-}
