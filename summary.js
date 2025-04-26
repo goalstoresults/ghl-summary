@@ -65,7 +65,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Basic Info
     setText("field-estimate-date", formatDate(contact["Estimate Date"]));
-    setText("contact-full-name-display", contact.full_name);
+    let fullName = contact.full_name || "";
+    const additionalFirst = (contact["Additional First Name"] || "").trim();
+    const additionalLast = (contact["Additional Last Name"] || "").trim();
+    const additionalName = (additionalFirst || additionalLast) ? ` + ${additionalFirst} ${additionalLast}`.trim() : "";
+    setText("contact-full-name-display", `${fullName}${additionalName}`);
+    
     setText("field-phone", contact.phone);
     setText("field-email", contact.email);
     setText("field-address", `${contact.address1 || ""}${contact.city ? ", " + contact.city : ""}${contact.state ? " " + contact.state : ""}${contact.postal_code ? " " + contact.postal_code : ""}`);
