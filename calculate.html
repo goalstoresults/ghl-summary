@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estimate Calculator Summary</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f9f9f9;
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+    h2 {
+      margin-top: 30px;
+      margin-bottom: 10px;
+      font-size: 22px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    .field-row {
+      margin: 8px 0;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    .field-label {
+      font-weight: bold;
+      display: inline-block;
+      width: 260px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Estimate Calculator Summary</h1>
+
+  <div id="roofing-section" style="display: none;">
+    <h2>Roofing</h2>
+    <div class="field-row"><span class="field-label">Roof Size (square footage):</span> <span id="roof-size"></span></div>
+    <div class="field-row"><span class="field-label">Roof Rate:</span> <span id="roof-rate"></span></div>
+  </div>
+
+  <div id="siding-section" style="display: none;">
+    <h2>Siding</h2>
+    <div class="field-row"><span class="field-label">Total Square Footage of Siding Area:</span> <span id="siding-sqft"></span></div>
+    <div class="field-row"><span class="field-label">Siding Rate:</span> <span id="siding-rate"></span></div>
+  </div>
+
+  <div id="gutters-section" style="display: none;">
+    <h2>Gutters</h2>
+    <div class="field-row"><span class="field-label">Linear Feet of Gutters Required:</span> <span id="gutters-feet"></span></div>
+    <div class="field-row"><span class="field-label">Gutter Rate:</span> <span id="gutter-rate"></span></div>
+  </div>
+
+  <div id="windows-section" style="display: none;">
+    <h2>Windows</h2>
+    <div class="field-row"><span class="field-label">Number of Windows:</span> <span id="window-count"></span></div>
+    <div class="field-row"><span class="field-label">Window Rate:</span> <span id="window-rate"></span></div>
+  </div>
+
+  <script src="./calculate.js" defer></script>
+</body>
+</html>
