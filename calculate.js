@@ -74,6 +74,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       { id: "window-total", key: "Window Total", formatter: formatMoney }
     ]);
 
+    // Totals Section
+    setText("combined-total", contact["Combined Total"], formatMoney);
+    setText("discount-total", contact["Discount Value"], formatMoney);
+    setText("grand-total", contact["Grand Total"], formatMoney);
+
+    
   } catch (err) {
     console.error("Failed to fetch contact:", err);
   }
