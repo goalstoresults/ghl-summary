@@ -168,6 +168,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText("field-cleanup-services", contact["Cleanup Services"]);
     setText("field-additional-windows-information", contact["Additional Windows Information"]);
 
+    // Totals Section (show only if values exist)
+const showIfValue = (fieldId, value, formatter = v => v) => {
+  const el = document.getElementById(fieldId);
+  if (el && value) {
+    el.textContent = formatter(value);
+    el.closest(".field-row").style.display = "block";
+  }
+};
+
+let showTotals = false;
+
+if (contact["Combined Total"]) {
+  showIfValue("field-combined-total", contact["Combined Total"], formatMoney);
+  showTotals = true;
+}
+if (contact["Discount Value"]) {
+  showIfValue("field-discount-total", contact["Discount Value"], formatMoney);
+  showTotals = true;
+}
+if (contact["Grand Total"]) {
+  showIfValue("field-grand-total", contact["Grand Total"], formatMoney);
+  showTotals = true;
+}
+
+if (showTotals) {
+  const totalsSection = document.getElementById("totals-section");
+  if (totalsSection) {
+    totalsSection.style.display = "block";
+  }
+}
+
   } catch (err) {
     console.error("Failed to fetch contact:", err);
   }
