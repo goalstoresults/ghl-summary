@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Totals Section
     setText("combined-total", contact["Combined Total"], formatMoney);
-    setText("discount-total", contact["Discount Value"], formatMoney);
+    setText("discount-total", contact["Discount Total"], formatMoney);
     setText("grand-total", contact["Grand Total"], formatMoney);
 
     
