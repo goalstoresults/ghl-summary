@@ -45,16 +45,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (contact[field]?.toLowerCase() === "yes") {
         const el = document.getElementById(sectionId);
         if (el) el.style.display = "block";
-
-        window.parent.postMessage(
-          {
-            type: "markSectionComplete",
-            section: sectionId.replace("-section", "").replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())
-          },
-          "*"
-        );
+    
+        // Wait 300ms before sending postMessage to parent
+        setTimeout(() => {
+          window.parent.postMessage(
+            {
+              type: "markSectionComplete",
+              section: sectionId.replace("-section", "").replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())
+            },
+            "*"
+          );
+        }, 300);
       }
     };
+
 
     // Show sections if their *_submit fields are yes
     showIfYes("basic_submit", "basic-section");
