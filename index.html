@@ -2,213 +2,255 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Estimate Summary</title>
+  <title>NYFO Contact Relationship Manager</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 40px;
-      background: #f9f9f9;
+      background: #f5f5f5;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
     }
+
     h2 {
-      margin-bottom: 10px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 5px;
+      margin-top: 30px;
     }
+
     .section {
-      margin-bottom: 30px;
       background: #fff;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      display: none;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
     }
-    .field-row {
-      margin: 8px 0;
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 10px;
     }
-    .field-label {
+
+    .field-box {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      flex: 1;
+    }
+
+    .field-box input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .or-label {
+      align-self: center;
       font-weight: bold;
-      display: inline-block;
-      width: 250px;
+      margin: 0 10px;
+    }
+
+    .email-field input {
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 16px;
+      background-color: #1d4ed8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .contact-info, .relationship {
+      margin-top: 10px;
+    }
+
+    .relationship {
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+    }
+
+    .not-found {
+      color: red;
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
 
-  <h1>Estimate Summary</h1>
+  <div class="section">
+    <h2>Search Contact</h2>
+    <div class="row">
+      <div class="field-box">
+        <input type="text" id="firstName" placeholder="First Name">
+        <input type="text" id="lastName" placeholder="Last Name">
+      </div>
+      <div class="or-label">OR</div>
+      <div class="field-box email-field">
+        <input type="text" id="email" placeholder="Email">
+      </div>
+    </div>
+    <button onclick="searchContact()">Search</button>
+    <div id="contactResult"></div>
+  </div>
 
-  <!-- Basic Info -->
-  <div id="basic-section" class="section">
-  <h2>Basic Info</h2>
-  <div class="field-row"><span class="field-label">Estimate Date:</span> <span id="field-estimate-date"></span></div>
-  <div class="field-row"><span class="field-label">Name:</span> <span id="contact-full-name-display"></span></div>
-  <div class="field-row"><span class="field-label">Phone:</span> <span id="field-phone"></span></div>
-  <div class="field-row"><span class="field-label">Email:</span> <span id="field-email"></span></div>
-  <div class="field-row"><span class="field-label">Address:</span> <span id="field-address"></span></div>
-  <div class="field-row"><span class="field-label">Building Type:</span> <span id="field-building-type"></span></div>
-  <div class="field-row"><span class="field-label">Number of Stories:</span> <span id="field-number-of-stories"></span></div>
-</div>
+  <div class="section">
+    <h2>Current Relationships</h2>
+    <div id="relationshipList"></div>
+  </div>
 
-<!-- Roofing Section -->
-<div id="roofing-section" class="section">
-  <h2>Roofing</h2>
-  <div class="field-row"><span class="field-label">Roof Size (square footage):</span> <span id="field-roof-size-square-footage"></span></div>
-  <div class="field-row"><span class="field-label">Material Desired:</span> <span id="field-material-desired"></span></div>
-  <div class="field-row"><span class="field-label">Roof Rate:</span> <span id="field-roof-rate"></span></div>
-  <div class="field-row"><span class="field-label">Roof Flat Rate:</span> <span id="field-roof-flat-rate"></span></div>
-  <div class="field-row"><span class="field-label">Roof Pitch/Slope:</span> <span id="field-roof-pitchslope"></span></div>
-  <div class="field-row"><span class="field-label">Current Roofing Material:</span> <span id="field-current-roofing-material"></span></div>
-  <div class="field-row"><span class="field-label">Condition of Existing Roof:</span> <span id="field-condition-of-existing-roof"></span></div>
-  <div class="field-row"><span class="field-label">Layers of Existing Roofing:</span> <span id="field-layers-of-existing-roof"></span></div>
-  <div class="field-row"><span class="field-label">Tearoff Type:</span> <span id="field-tearoff-type"></span></div>
-  <div class="field-row"><span class="field-label">Sheathing Condition:</span> <span id="field-sheathing-condition"></span></div>
-  <div class="field-row"><span class="field-label">Color Preference:</span> <span id="field-color-preference"></span></div>
-  <div class="field-row"><span class="field-label">Underlayment Type:</span> <span id="field-underlayment-type"></span></div>
-  <div class="field-row"><span class="field-label">Installation/Ventilation Upgrades:</span> <span id="field-installation-ventalation-upgrades"></span></div>
-  <div class="field-row"><span class="field-label">Additional Roofing Information:</span> <span id="field-additional-roofing-information"></span></div>
-  <div class="field-row"><span class="field-label">Underlayment Option:</span> <span id="field-underlayment-option"></span></div>
-  <div class="field-row"><span class="field-label">Markup Percent:</span> <span id="field-markup-percent"></span></div>
-</div>
-<!-- Siding Section -->
-<div id="siding-section" class="section">
-  <h2>Siding</h2>
-  <div class="field-row"><span class="field-label">Total Square Footage of Siding Area:</span> <span id="field-total-square-footage-of-siding-area"></span></div>
-  <div class="field-row"><span class="field-label">Type of New Siding:</span> <span id="field-type-of-new-siding"></span></div>
-  <div class="field-row"><span class="field-label">Siding Rate:</span> <span id="field-siding-rate"></span></div>
-  <div class="field-row"><span class="field-label">Siding Flat Cost:</span> <span id="field-siding-flat-cost"></span></div>
-  <div class="field-row"><span class="field-label">Type of Existing Siding:</span> <span id="field-type-of-existing-siding"></span></div>
-  <div class="field-row"><span class="field-label">Siding Brand/Model/Color:</span> <span id="field-siding-brandmodelcolor"></span></div>
-  <div class="field-row"><span class="field-label">Trim and Accent Areas:</span> <span id="field-trim-and-accent-areas"></span></div>
-  <div class="field-row"><span class="field-label">Number and type of Windows/Doors:</span> <span id="field-number-and-type-of-windowsdoors"></span></div>
-  <div class="field-row"><span class="field-label">Special Architectural Features:</span> <span id="field-special-architectural-features"></span></div>
-  <div class="field-row"><span class="field-label">Labor Costs:</span> <span id="field-labor-costs"></span></div>
-  <div class="field-row"><span class="field-label">Material Costs:</span> <span id="field-material-costs"></span></div>
-  <div class="field-row"><span class="field-label">Equipment Rental:</span> <span id="field-equipment-rental"></span></div>
-  <div class="field-row"><span class="field-label">Waste Disposal/Dumpster Fees:</span> <span id="field-wast-disposaldumpster-fees"></span></div>
-  <div class="field-row"><span class="field-label">Permits or Inspection Fees:</span> <span id="field-permits-or-inspection-fees"></span></div>
-  <div class="field-row"><span class="field-label">Additional Siding Information:</span> <span id="field-additional-siding-information"></span></div>
-</div>
-<!-- Gutters Section -->
-<div id="gutters-section" class="section">
-  <h2>Gutters</h2>
-  <div class="field-row"><span class="field-label">Linear Feet of Gutters Required:</span> <span id="field-linear-feet-of-gutters-required"></span></div>
-  <div class="field-row"><span class="field-label">Type of Gutter Work:</span> <span id="field-type-of-gutter-work"></span></div>
-  <div class="field-row"><span class="field-label">Gutter Rate:</span> <span id="field-gutter-rate"></span></div>
-  <div class="field-row"><span class="field-label">Gutter Flat Fee:</span> <span id="field-gutter-flat-fee"></span></div>
-  <div class="field-row"><span class="field-label">Type of Gutters:</span> <span id="field-type-of-gutters"></span></div>
-  <div class="field-row"><span class="field-label">Gutter Material Chosen:</span> <span id="field-gutter-material-chosen"></span></div>
-  <div class="field-row"><span class="field-label">Gutter Size:</span> <span id="field-gutter-size"></span></div>
-  <div class="field-row"><span class="field-label">Downspout Size and Style:</span> <span id="field-downspout-size-and-style"></span></div>
-  <div class="field-row"><span class="field-label">Gutter Guard Type:</span> <span id="field-gutter-guard-type"></span></div>
-  <div class="field-row"><span class="field-label">Gutter Color and Finish:</span> <span id="field-gutter-color-and-finish"></span></div>
-  <div class="field-row"><span class="field-label">Areas of House Involved:</span> <span id="field-areas-of-house-involved"></span></div>
-  <div class="field-row"><span class="field-label">Linear Feet of Downspouts:</span> <span id="field-linear-feet-of-downspouts"></span></div>
-  <div class="field-row"><span class="field-label">Number of Inside/Outside Corners:</span> <span id="field-number-of-insideoutside-corners"></span></div>
-  <div class="field-row"><span class="field-label">Number of Downspout Drops/Outlets:</span> <span id="field-number-of-downspout-dropsoutlets"></span></div>
-  <div class="field-row"><span class="field-label">Special Roof Features:</span> <span id="field-special-roof-features"></span></div>
-  <div class="field-row"><span class="field-label">Gutter Material Cost (per linear foot):</span> <span id="field-gutter-material-cost-per-linear-foot"></span></div>
-  <div class="field-row"><span class="field-label">Downspout Material:</span> <span id="field-downspout-material"></span></div>
-  <div class="field-row"><span class="field-label">Elbows, End Caps, Hangers, Brackets:</span> <span id="field-elbows-end-caps-hangers-brackets"></span></div>
-  <div class="field-row"><span class="field-label">Screws, Sealants, Splash Blocks, Gutter Guards:</span> <span id="field-screws-sealants-splash-blocks-gutter-guards"></span></div>
-  <div class="field-row"><span class="field-label">Fasteners, Hidden Hangers, Miters:</span> <span id="field-fasteners-hidden-hangers-miters"></span></div>
-  <div class="field-row"><span class="field-label">Waste Factor:</span> <span id="field-waste-factor"></span></div>
-  <div class="field-row"><span class="field-label">Hourly Labor Rate:</span> <span id="field-hourly-labor-rate"></span></div>
-  <div class="field-row"><span class="field-label">Estimated Labor Time:</span> <span id="field-estimated-labor-time"></span></div>
-  <div class="field-row"><span class="field-label">Additional Labor Fees:</span> <span id="field-additional-labor-fees"></span></div>
-  <div class="field-row"><span class="field-label">Demolition and Disposal Fees:</span> <span id="field-demolition-and-disposal-fees"></span></div>
-  <div class="field-row"><span class="field-label">Equipment and Logistic Fees:</span> <span id="field-equipment-and-logistic-fees"></span></div>
-  <div class="field-row"><span class="field-label">Additional Gutters Information:</span> <span id="field-additional-gutters-information"></span></div>
-</div>
-<!-- Windows Section -->
-<div id="windows-section" class="section">
-  <h2>Windows</h2>
-  <div class="field-row"><span class="field-label">Window Style:</span> <span id="field-window-style"></span></div>
-  <div class="field-row"><span class="field-label">Number of Windows:</span> <span id="field-number-of-windows"></span></div>
-  <div class="field-row"><span class="field-label">Type of Windows:</span> <span id="field-type-of-windows"></span></div>
-  <div class="field-row"><span class="field-label">Material:</span> <span id="field-material"></span></div>
-  <div class="field-row"><span class="field-label">Window Rate:</span> <span id="field-window-rate"></span></div>
-  <div class="field-row"><span class="field-label">Window Flat Rate:</span> <span id="field-window-flat-rate"></span></div>
-  <div class="field-row"><span class="field-label">Glass Type:</span> <span id="field-glass-type"></span></div>
-  <div class="field-row"><span class="field-label">Grid Style:</span> <span id="field-grid-style"></span></div>
-  <div class="field-row"><span class="field-label">Interior/Exterior Color:</span> <span id="field-interiorexterior-color"></span></div>
-  <div class="field-row"><span class="field-label">Window Brand/Model:</span> <span id="field-window-brandmodel"></span></div>
-  <div class="field-row"><span class="field-label">Size or Custom Measurements:</span> <span id="field-size-or-custom-measurements"></span></div>
-  <div class="field-row"><span class="field-label">Labor Cost Per Window or Hourly:</span> <span id="field-labor-cost-per-window-or-hourly"></span></div>
-  <div class="field-row"><span class="field-label">Number of Crew Members:</span> <span id="field-number-of-crew-members"></span></div>
-  <div class="field-row"><span class="field-label">Estimated Labor Hours:</span> <span id="field-estimated-labor-hours"></span></div>
-  <div class="field-row"><span class="field-label">Old Window Removal Costs:</span> <span id="field-old-window-removal-costs"></span></div>
-  <div class="field-row"><span class="field-label">Window Disposal Fees:</span> <span id="field-window-disposal-fees"></span></div>
-  <div class="field-row"><span class="field-label">Flashing/Waterproofing Details:</span> <span id="field-flashingwaterproofing-details"></span></div>
-  <div class="field-row"><span class="field-label">Interior/Exterior Trim Work:</span> <span id="field-interiorexterior-trim-work"></span></div>
-  <div class="field-row"><span class="field-label">Caulking and Insulation:</span> <span id="field-caulking-and-insulation"></span></div>
-  <div class="field-row"><span class="field-label">Cleanup Services:</span> <span id="field-cleanup-services"></span></div>
-  <div class="field-row"><span class="field-label">Additional Windows Information:</span> <span id="field-additional-windows-information"></span></div>
-</div>
-  <!-- Totals Section -->
-<div id="totals-section" class="section" style="display: none;">
-  <h2>Totals</h2>
-  <div class="field-row"><span class="field-label">Combined Total:</span> <span id="field-combined-total"></span></div>
-  <div class="field-row"><span class="field-label">Discount Total:</span> <span id="field-discount-total"></span></div>
-  <div class="field-row"><span class="field-label">Grand Total:</span> <span id="field-grand-total"></span></div>
-</div>
+  <div class="section">
+    <button onclick="showAddRelationship()">Add Relationship</button>
+    <div id="addRelationshipSection" style="display:none;">
+      <h2>Search Related Contact</h2>
+      <div class="row">
+        <div class="field-box">
+          <input type="text" id="relatedFirstName" placeholder="First Name">
+          <input type="text" id="relatedLastName" placeholder="Last Name">
+        </div>
+        <div class="or-label">OR</div>
+        <div class="field-box email-field">
+          <input type="text" id="relatedEmail" placeholder="Email">
+        </div>
+      </div>
+      <button onclick="searchRelatedContact()">Search Related Contact</button>
+      <div id="relatedContactResult"></div>
+    </div>
+  </div>
 
-<!-- Terms and Notices -->
-<div id="terms-section" style="margin-top: 40px;">
-  <h2>TERMS / NOTICES: RESIDENTIAL / COMMERCIAL</h2>
-  <p>It is the homeowners and/or the HOA's responsibility to ensure that prior to the start of the project all areas of concern are prepared for the start of the project. All planters, grills, patio furnishings, and other precious objects should also be moved prior to the start of any roofing or vinyl siding project.</p>
-  <p>All vehicles should be parked at least <strong>15 feet away</strong> from the home during all work in progress - this is due to debris that could fall and/or hit the vehicle. Acro Contractor Corp is not responsible for any damages to this property should these guidelines not be followed. This should be considered a formal notice.</p>
-  <p>All interior wall hangings, including shelving, pictures and other precious objects should also be removed due to hammering until the project has been completed. Acro Contractor Corp is not responsible for interior wall or ceiling cracking or nail pops due to construction.</p>
-  <p>Acro Contractor Corp takes extreme care in the setting up of equipment, scaffolding, and tarps used on each project in order to protect all property and landscaping.</p>
-  <p>Any damages to the property incurred by Acro Contractor Corp will be repaired/replaced by Acro Contractor Corp. However, we cannot be held liable for damages to plants, flower beds, shrubbery, etc., located within 15' of the perimeter of the work area.</p>
-  <p>INITIALS: ________________</p>
+  <script>
+    let currentContact = null;
+    let relatedContact = null;
 
-  <h3>The project consists of the entire roof.</h3>
-  <ul>
-    <li>Labor: 10-year Craftsmanship Warranty</li>
-    <li>Materials: Manufacturer's Warranty</li>
-  </ul>
+    function searchContact() {
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('email').value.trim();
 
-  <h3>PAYMENT TERMS:</h3>
-  <ul>
-    <li>1/3 due at signing of contract: ______________</li>
-    <li>2/3 due at completion of project: ____________</li>
-  </ul>
+      let url = 'https://ghl-nyfo-search.dennis-e64.workers.dev/search-contact?';
+      if (email) {
+        url += `email=${encodeURIComponent(email)}`;
+      } else {
+        url += `first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}`;
+      }
 
-  <h3>Scope of Work:</h3>
-  <ul>
-    <li>Install F-8 drip edge around entire perimeter of shingled roof (white)</li>
-    <li>Install OC water-resistant underlayment to all sheathing not covered by the waterproofing underlayment</li>
-    <li>Prepare all ridges of building to ensure proper ventilation</li>
-    <li>Install new architectural Owens Corning Duration Series shingles (color by owner): ____________</li>
-    <li>Install ridge vent and cap with OC ridge cap shingles to match</li>
-    <li>Replace all pipe flanges and waterproof all protrusions</li>
-  </ul>
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          console.log("Search Contact Response:", data);
+          if (data.contact_id) {
+            currentContact = data;
+            document.getElementById('contactResult').innerHTML = `
+              <div class="contact-info">
+                <strong>Name:</strong> ${data.full_name}<br>
+                <strong>Email:</strong> ${data.email}<br>
+                <strong>Phone:</strong> ${data.phone}
+              </div>
+            `;
+            const relationships = data.relationships.map(r => `
+              <div class="relationship">
+                <strong>Type:</strong> ${r.relationship_type}<br>
+                <strong>Role:</strong> ${r.relationship_role}<br>
+                <strong>Related To:</strong> ${r.related_to_name}
+              </div>
+            `).join('');
+            document.getElementById('relationshipList').innerHTML = relationships || 'None';
+          } else {
+            currentContact = null;
+            document.getElementById('contactResult').innerHTML = '<div class="not-found">Contact not found</div>';
+            document.getElementById('relationshipList').innerHTML = '';
+          }
+        });
+    }
 
-  <p>Acro Contractor Corp will replace 100 sq ft of rotted sheathing at no cost. Additional sheathing will be charged at $75 per sheet of plywood or $5 per linear foot of plank board. This includes removal, disposal, and installation.</p>
-  <p>Initials (acknowledgment of potential additional charges): __________</p>
+    function showAddRelationship() {
+      document.getElementById('addRelationshipSection').style.display = 'block';
+    }
 
-  <p>All leftover materials on site remain property of Acro Contractor Corp.</p>
-  <p>We will secure and close out all applicable town/city permits upon completion.</p>
+    function searchRelatedContact() {
+      const firstName = document.getElementById('relatedFirstName').value.trim();
+      const lastName = document.getElementById('relatedLastName').value.trim();
+      const email = document.getElementById('relatedEmail').value.trim();
 
-  <h3>Retainage Policy:</h3>
-  <p>In the rare event that retainage must be held for punch list items, the customer may only hold 10% of the contract price until all items have been completed.</p>
+      let url = 'https://ghl-nyfo-search.dennis-e64.workers.dev/search-contact?';
+      if (email) {
+        url += `email=${encodeURIComponent(email)}`;
+      } else {
+        url += `first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}`;
+      }
 
-  <p><strong>Authorized Signature:</strong> ___________________________ Date: ____________</p>
-  <p><strong>Customer Name:</strong> <span id="contact-full-name-display"></span></p>
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          console.log("Search Related Contact Response:", data);
+          if (data.contact_id) {
+            relatedContact = data;
+            document.getElementById('relatedContactResult').innerHTML = `
+              <div class="contact-info">
+                <strong>Name:</strong> ${data.full_name}<br>
+                <strong>Email:</strong> ${data.email}<br>
+                <strong>Phone:</strong> ${data.phone}<br>
+                <label>Relationship Type:
+                  <input type="text" id="relationshipType">
+                </label>
+                <label>Relationship Role:
+                  <input type="text" id="relationshipRole">
+                </label>
+                <button onclick="saveRelationship()">Save Relationship</button>
+              </div>
+            `;
+          } else {
+            relatedContact = null;
+            document.getElementById('relatedContactResult').innerHTML = '<div class="not-found">Related contact not found</div>';
+          }
+        });
+    }
 
-  <p id="additional-signature" style="margin-top: 30px; display: none;">
-    <strong>Additional Signature:</strong> ___________________________<br/>
-    <span id="additional-name-display"></span>
-  </p>
+    function saveRelationship() {
+      if (!currentContact || !relatedContact) return alert("Missing contacts");
 
-  <p><strong>Contractor Signature:</strong> ___________________________ Date: ____________</p>
+      const relationshipType = document.getElementById('relationshipType').value.trim();
+      const relationshipRole = document.getElementById('relationshipRole').value.trim();
 
-  <h3>ROOFING REPLACEMENT</h3>
-  <h3>ACCEPTANCE OF QUOTE</h3>
-  <p>Date: ______________</p>
-</div>
-<!-- Summary Script -->
-<script src="./summary.js" defer></script>
-
+      fetch('https://ghl-nyfo-search.dennis-e64.workers.dev/save-relationship', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source_contact_id: currentContact.contact_id,
+          related_contact_id: relatedContact.contact_id,
+          relationship_type: relationshipType,
+          relationship_role: relationshipRole
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Save Relationship Response:", data);
+        alert("Relationship saved!");
+      });
+    }
+  </script>
 </body>
 </html>
