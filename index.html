@@ -235,7 +235,7 @@
       const relationshipType = document.getElementById('relationshipType').value.trim();
       const relationshipRole = document.getElementById('relationshipRole').value.trim();
 
-      fetch('https://ghl-nyfo-search.dennis-e64.workers.dev/save-relationship', {
+      fetch('https://ghl-nyfo-save-relationship.dennis-e64.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
