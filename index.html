@@ -76,11 +76,6 @@
       margin-top: 10px;
     }
 
-    .relationship {
-      border-top: 1px solid #ccc;
-      padding-top: 10px;
-    }
-
     .not-found {
       color: red;
       font-weight: bold;
@@ -96,6 +91,22 @@
       width: 100%;
       border-radius: 6px;
       border: 1px solid #ccc;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #f0f0f0;
     }
   </style>
 </head>
@@ -161,11 +172,10 @@
         .then(res => res.json())
         .then(data => {
           console.log("Search Contact Response:", data);
-          if (data.contact_id) {
+          if (data.email && data.email !== "N/A") {
             currentContact = data;
             document.getElementById('contactResult').innerHTML = `
               <div class="contact-info">
-                <strong>Name:</strong> ${data.full_name}<br>
                 <strong>Email:</strong> ${data.email}<br>
                 <strong>Phone:</strong> ${data.phone}
               </div>
@@ -180,14 +190,33 @@
     }
 
     function renderRelationships(relationships) {
-      const html = relationships.map(r => `
-        <div class="relationship">
-          <strong>Type:</strong> ${r.relationship_type}<br>
-          <strong>Role:</strong> ${r.relationship_role}<br>
-          <strong>Related To:</strong> ${r.related_to_name}
-        </div>
+      if (!relationships.length) {
+        document.getElementById('relationshipList').innerHTML = 'None';
+        return;
+      }
+
+      const rows = relationships.map(r => `
+        <tr>
+          <td>${r.source_name}</td>
+          <td>${r.related_name}</td>
+          <td>${r.relationship_type}</td>
+          <td>${r.relationship_role}</td>
+        </tr>
       `).join('');
-      document.getElementById('relationshipList').innerHTML = html || 'None';
+
+      document.getElementById('relationshipList').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Related</th>
+              <th>Type</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
     }
 
     function showAddRelationship() {
@@ -212,7 +241,7 @@
         .then(res => res.json())
         .then(data => {
           console.log("Search Related Contact Response:", data);
-          if (data.contact_id) {
+          if (data.email && data.email !== "N/A") {
             relatedContact = data;
             document.getElementById('relatedContactResult').innerHTML = `
               <div class="contact-info">
@@ -261,11 +290,7 @@
         console.log("Save Relationship Response:", data);
         if (data.success) {
           alert("Relationship saved!");
-
-          // Refresh contact search to reload updated relationships
-          searchContact();
-
-          // Reset related contact form
+          searchContact(); // Refresh list
           document.getElementById('relatedFirstName').value = '';
           document.getElementById('relatedLastName').value = '';
           document.getElementById('relatedEmail').value = '';
@@ -284,3 +309,4 @@
   </script>
 </body>
 </html>
+
