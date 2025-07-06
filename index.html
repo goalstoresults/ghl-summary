@@ -170,14 +170,7 @@
                 <strong>Phone:</strong> ${data.phone}
               </div>
             `;
-            const relationships = data.relationships.map(r => `
-              <div class="relationship">
-                <strong>Type:</strong> ${r.relationship_type}<br>
-                <strong>Role:</strong> ${r.relationship_role}<br>
-                <strong>Related To:</strong> ${r.related_to_name}
-              </div>
-            `).join('');
-            document.getElementById('relationshipList').innerHTML = relationships || 'None';
+            renderRelationships(data.relationships);
           } else {
             currentContact = null;
             document.getElementById('contactResult').innerHTML = '<div class="not-found">Contact not found</div>';
@@ -186,8 +179,21 @@
         });
     }
 
+    function renderRelationships(relationships) {
+      const html = relationships.map(r => `
+        <div class="relationship">
+          <strong>Type:</strong> ${r.relationship_type}<br>
+          <strong>Role:</strong> ${r.relationship_role}<br>
+          <strong>Related To:</strong> ${r.related_to_name}
+        </div>
+      `).join('');
+      document.getElementById('relationshipList').innerHTML = html || 'None';
+    }
+
     function showAddRelationship() {
       document.getElementById('addRelationshipSection').style.display = 'block';
+      document.getElementById('relatedContactResult').innerHTML = '';
+      relatedContact = null;
     }
 
     function searchRelatedContact() {
@@ -229,37 +235,52 @@
         });
     }
 
-   function saveRelationship() {
-  if (!currentContact || !relatedContact) return alert("Missing contacts");
+    function saveRelationship() {
+      if (!currentContact || !relatedContact) return alert("Missing contacts");
 
-  const relationshipType = document.getElementById('relationshipType').value.trim();
-  const relationshipRole = document.getElementById('relationshipRole').value.trim();
+      const relationshipType = document.getElementById('relationshipType').value.trim();
+      const relationshipRole = document.getElementById('relationshipRole').value.trim();
 
-  fetch('https://ghl-nyfo-save-relationship.dennis-e64.workers.dev', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      source_contact_id: currentContact.contact_id,
-      related_contact_id: relatedContact.contact_id,
-      relationship_type: relationshipType,
-      relationship_role: relationshipRole
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log("Save Relationship Response:", data);
-    if (data.success) {
-      alert("Relationship saved!");
-    } else {
-      alert("Failed to save: " + (data.error || 'Unknown error'));
+      if (!relationshipType || !relationshipRole) {
+        alert("Please enter both type and role");
+        return;
+      }
+
+      fetch('https://ghl-nyfo-save-relationship.dennis-e64.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source_contact_id: currentContact.contact_id,
+          related_contact_id: relatedContact.contact_id,
+          relationship_type: relationshipType,
+          relationship_role: relationshipRole
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Save Relationship Response:", data);
+        if (data.success) {
+          alert("Relationship saved!");
+
+          // Refresh contact search to reload updated relationships
+          searchContact();
+
+          // Reset related contact form
+          document.getElementById('relatedFirstName').value = '';
+          document.getElementById('relatedLastName').value = '';
+          document.getElementById('relatedEmail').value = '';
+          document.getElementById('relatedContactResult').innerHTML = '';
+          document.getElementById('addRelationshipSection').style.display = 'none';
+          relatedContact = null;
+        } else {
+          alert("Failed to save: " + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(err => {
+        console.error("Save Error:", err);
+        alert("Error saving relationship");
+      });
     }
-  })
-  .catch(err => {
-    console.error("Save Error:", err);
-    alert("Error saving relationship");
-  });
-}
-
   </script>
 </body>
 </html>
