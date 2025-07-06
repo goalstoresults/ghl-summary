@@ -76,6 +76,11 @@
       margin-top: 10px;
     }
 
+    .relationship {
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+    }
+
     .not-found {
       color: red;
       font-weight: bold;
@@ -91,22 +96,6 @@
       width: 100%;
       border-radius: 6px;
       border: 1px solid #ccc;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-
-    thead {
-      background-color: #f0f0f0;
     }
   </style>
 </head>
@@ -133,35 +122,13 @@
     <div id="relationshipList"></div>
   </div>
 
-  <div class="section">
-    <button onclick="showAddRelationship()">Add Relationship</button>
-    <div id="addRelationshipSection" style="display:none;">
-      <h2>Search Related Contact</h2>
-      <div class="row">
-        <div class="field-box">
-          <input type="text" id="relatedFirstName" placeholder="First Name">
-          <input type="text" id="relatedLastName" placeholder="Last Name">
-        </div>
-        <div class="or-label">OR</div>
-        <div class="field-box email-field">
-          <input type="text" id="relatedEmail" placeholder="Email">
-        </div>
-      </div>
-      <button onclick="searchRelatedContact()">Search Related Contact</button>
-      <div id="relatedContactResult"></div>
-    </div>
-  </div>
-
   <script>
-    let currentContact = null;
-    let relatedContact = null;
-
     function searchContact() {
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
       const email = document.getElementById('email').value.trim();
 
-      let url = 'https://ghl-nyfo-search.dennis-e64.workers.dev/search-contact?';
+      let url = 'https://ghl-nyfo-api.dennis-e64.workers.dev/?';
       if (email) {
         url += `email=${encodeURIComponent(email)}`;
       } else {
@@ -171,18 +138,16 @@
       fetch(url)
         .then(res => res.json())
         .then(data => {
-          console.log("Search Contact Response:", data);
+          console.log("Search Response:", data);
           if (data.email && data.email !== "N/A") {
-            currentContact = data;
             document.getElementById('contactResult').innerHTML = `
               <div class="contact-info">
                 <strong>Email:</strong> ${data.email}<br>
                 <strong>Phone:</strong> ${data.phone}
               </div>
             `;
-            renderRelationships(data.relationships);
+            renderRelationships(data.relationships || []);
           } else {
-            currentContact = null;
             document.getElementById('contactResult').innerHTML = '<div class="not-found">Contact not found</div>';
             document.getElementById('relationshipList').innerHTML = '';
           }
@@ -190,123 +155,16 @@
     }
 
     function renderRelationships(relationships) {
-      if (!relationships.length) {
-        document.getElementById('relationshipList').innerHTML = 'None';
-        return;
-      }
-
-      const rows = relationships.map(r => `
-        <tr>
-          <td>${r.source_name}</td>
-          <td>${r.related_name}</td>
-          <td>${r.relationship_type}</td>
-          <td>${r.relationship_role}</td>
-        </tr>
+      const html = relationships.map(r => `
+        <div class="relationship">
+          <strong>Source:</strong> ${r.source_name}<br>
+          <strong>Related:</strong> ${r.related_name}<br>
+          <strong>Type:</strong> ${r.relationship_type?.value || r.relationship_type || "N/A"}<br>
+          <strong>Role:</strong> ${r.relationship_role?.value || r.relationship_role || "N/A"}<br>
+        </div>
       `).join('');
-
-      document.getElementById('relationshipList').innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Source</th>
-              <th>Related</th>
-              <th>Type</th>
-              <th>Role</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      `;
-    }
-
-    function showAddRelationship() {
-      document.getElementById('addRelationshipSection').style.display = 'block';
-      document.getElementById('relatedContactResult').innerHTML = '';
-      relatedContact = null;
-    }
-
-    function searchRelatedContact() {
-      const firstName = document.getElementById('relatedFirstName').value.trim();
-      const lastName = document.getElementById('relatedLastName').value.trim();
-      const email = document.getElementById('relatedEmail').value.trim();
-
-      let url = 'https://ghl-nyfo-search.dennis-e64.workers.dev/search-contact?';
-      if (email) {
-        url += `email=${encodeURIComponent(email)}`;
-      } else {
-        url += `first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}`;
-      }
-
-      fetch(url)
-        .then(res => res.json())
-        .then(data => {
-          console.log("Search Related Contact Response:", data);
-          if (data.email && data.email !== "N/A") {
-            relatedContact = data;
-            document.getElementById('relatedContactResult').innerHTML = `
-              <div class="contact-info">
-                <strong>Name:</strong> ${data.full_name}<br>
-                <strong>Email:</strong> ${data.email}<br>
-                <strong>Phone:</strong> ${data.phone}<br>
-                <label>Relationship Type:
-                  <input type="text" id="relationshipType">
-                </label>
-                <label>Relationship Role:
-                  <input type="text" id="relationshipRole">
-                </label>
-                <button onclick="saveRelationship()">Save Relationship</button>
-              </div>
-            `;
-          } else {
-            relatedContact = null;
-            document.getElementById('relatedContactResult').innerHTML = '<div class="not-found">Related contact not found</div>';
-          }
-        });
-    }
-
-    function saveRelationship() {
-      if (!currentContact || !relatedContact) return alert("Missing contacts");
-
-      const relationshipType = document.getElementById('relationshipType').value.trim();
-      const relationshipRole = document.getElementById('relationshipRole').value.trim();
-
-      if (!relationshipType || !relationshipRole) {
-        alert("Please enter both type and role");
-        return;
-      }
-
-      fetch('https://ghl-nyfo-save-relationship.dennis-e64.workers.dev', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          source_contact_id: currentContact.contact_id,
-          related_contact_id: relatedContact.contact_id,
-          relationship_type: relationshipType,
-          relationship_role: relationshipRole
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log("Save Relationship Response:", data);
-        if (data.success) {
-          alert("Relationship saved!");
-          searchContact(); // Refresh list
-          document.getElementById('relatedFirstName').value = '';
-          document.getElementById('relatedLastName').value = '';
-          document.getElementById('relatedEmail').value = '';
-          document.getElementById('relatedContactResult').innerHTML = '';
-          document.getElementById('addRelationshipSection').style.display = 'none';
-          relatedContact = null;
-        } else {
-          alert("Failed to save: " + (data.error || 'Unknown error'));
-        }
-      })
-      .catch(err => {
-        console.error("Save Error:", err);
-        alert("Error saving relationship");
-      });
+      document.getElementById('relationshipList').innerHTML = html || 'None';
     }
   </script>
 </body>
 </html>
-
