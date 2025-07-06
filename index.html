@@ -138,7 +138,7 @@
       fetch(url)
         .then(res => res.json())
         .then(data => {
-          console.log("Search Response:", data);
+          console.log("Search Contact Response:", data);
           if (data.email && data.email !== "N/A") {
             document.getElementById('contactResult').innerHTML = `
               <div class="contact-info">
@@ -155,15 +155,28 @@
     }
 
     function renderRelationships(relationships) {
-      const html = relationships.map(r => `
-        <div class="relationship">
-          <strong>Source:</strong> ${r.source_name}<br>
-          <strong>Related:</strong> ${r.related_name}<br>
-          <strong>Type:</strong> ${r.relationship_type?.value || r.relationship_type || "N/A"}<br>
-          <strong>Role:</strong> ${r.relationship_role?.value || r.relationship_role || "N/A"}<br>
-        </div>
-      `).join('');
-      document.getElementById('relationshipList').innerHTML = html || 'None';
+      console.log("Rendering relationships:", relationships);
+
+      if (!Array.isArray(relationships) || relationships.length === 0) {
+        document.getElementById('relationshipList').innerHTML = '<div class="not-found">No relationships found.</div>';
+        return;
+      }
+
+      const html = relationships.map(r => {
+        const type = typeof r.relationship_type === 'object' ? r.relationship_type?.value : r.relationship_type || "N/A";
+        const role = typeof r.relationship_role === 'object' ? r.relationship_role?.value : r.relationship_role || "N/A";
+
+        return `
+          <div class="relationship">
+            <strong>Source:</strong> ${r.source_name || "Unknown"}<br>
+            <strong>Related:</strong> ${r.related_name || "Unknown"}<br>
+            <strong>Type:</strong> ${type}<br>
+            <strong>Role:</strong> ${role}<br>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('relationshipList').innerHTML = html;
     }
   </script>
 </body>
