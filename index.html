@@ -154,7 +154,7 @@
         });
     }
 
-    function renderRelationships(relationships) {
+function renderRelationships(relationships) {
   console.log("Rendering relationships:", relationships);
 
   if (!Array.isArray(relationships) || relationships.length === 0) {
@@ -163,8 +163,8 @@
   }
 
   const html = relationships.map(r => {
-    const type = (typeof r.relationship_type === 'object') ? r.relationship_type.value : r.relationship_type || "N/A";
-    const role = (typeof r.relationship_role === 'object') ? r.relationship_role.value : r.relationship_role || "N/A";
+    const type = r.relationship_type?.value || (typeof r.relationship_type === 'string' ? r.relationship_type : "N/A");
+    const role = r.relationship_role?.value || (typeof r.relationship_role === 'string' ? r.relationship_role : "N/A");
 
     return `
       <div class="relationship">
@@ -178,6 +178,7 @@
 
   document.getElementById('relationshipList').innerHTML = html;
 }
+
 
   </script>
 </body>
